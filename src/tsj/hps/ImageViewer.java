@@ -18,6 +18,8 @@ import javax.swing.Timer;
 
 import javax.swing.JPanel;
 
+import tsj.hps.ds.ExperimentData;
+
 /**
  * ImageViewer
  * 
@@ -25,7 +27,12 @@ import javax.swing.JPanel;
  *
  */
 public class ImageViewer extends JPanel {
-	
+
+	/**
+	 * Secret signature
+	 */
+	private static final long serialVersionUID = 19891020200000L;
+
 	private Dispatcher dispatcher;
 	
 	private Image backgroundImage;

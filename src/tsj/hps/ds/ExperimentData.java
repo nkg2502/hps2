@@ -1,4 +1,4 @@
-package tsj.hps;
+package tsj.hps.ds;
 
 /**
  * Experiment Result
