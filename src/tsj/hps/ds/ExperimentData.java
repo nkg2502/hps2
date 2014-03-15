@@ -73,4 +73,15 @@ public class ExperimentData {
 	{
 		return isPassed;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return backgroundName
+			+ ": " + targetName
+			+ ": " + time
+			+ ":[F] " + isFound
+			+ ":[P] " + isPassed
+			;
+	}
 }

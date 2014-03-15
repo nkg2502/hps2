@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.GregorianCalendar;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
@@ -19,6 +20,7 @@ import javax.swing.Timer;
 import javax.swing.JPanel;
 
 import tsj.hps.ds.ExperimentData;
+import tsj.hps.ds.ImageNode;
 
 /**
  * ImageViewer
@@ -159,6 +161,8 @@ public class ImageViewer extends JPanel {
 			
 			// draw background image
 			g.drawImage(backgroundImage, (int) backgroundArea.getX(), (int) backgroundArea.getY(), this);
+			
+			// draw target image
 			g.drawImage(targetImage, (int) targetArea.getX(), (int) targetArea.getY(), this);
 			
 			// FOR DEBUGGING
@@ -166,11 +170,6 @@ public class ImageViewer extends JPanel {
 			g2.setPaint(Color.WHITE);
 			g2.draw(backgroundArea);
 			g2.draw(targetArea);
-			
-			// draw target image
-			
-			
-			
 		}
 	}
 	
@@ -181,9 +180,7 @@ public class ImageViewer extends JPanel {
 	private void verify(boolean isFound, boolean isPassed) {
 		
 		isShowTime = false;
-		
 		showTimer.stop();
-		
 		breakTimer.start();
 		
 		ExperimentData data = new ExperimentData();
@@ -191,7 +188,7 @@ public class ImageViewer extends JPanel {
 		data.setTargetName(targetName);
 		data.setFound(isFound);
 		data.setPassed(isPassed);
-		data.setTime(startTime);
+		data.setTime((new GregorianCalendar()).getTimeInMillis() - startTime);
 		
 		dispatcher.addExperimentData(data);
 		
@@ -200,29 +197,46 @@ public class ImageViewer extends JPanel {
 	
 	private void nextImage() {
 		
-		File backgroundFile = dispatcher.popBackgroundImage();
-		File targetFile = dispatcher.popTargetImage();
+		ImageNode imageNode = dispatcher.popImage();
 		
-		// TODO: targetFile 없으면 어쩔꺼?
-		if(null == backgroundFile)
+		// end experiment
+		if(null == imageNode) {
+			
+			breakTimer.stop();
+			showTimer.stop();
+			
+			dispatcher.endNotify();
+			
 			System.exit(0);
+		}
+		
+		File backgroundFile = imageNode.getBackgroundImage();
+		File targetFile = imageNode.getTargetImage();
 		
 		backgroundName = backgroundFile.getName();
 		targetName = targetFile.getName();
 		
 		backgroundImage = loadImage(backgroundFile);
+		
 		targetImage = loadImage(targetFile);
 				
-		int rx = (screenSize.width - backgroundImage.getWidth(this)) / 2;
-		int ry = (screenSize.height - backgroundImage.getHeight(this)) / 2;
+		int topX = (screenSize.width - backgroundImage.getWidth(this)) / 2;
+		int topY = (screenSize.height - backgroundImage.getHeight(this)) / 2;
 		
-		backgroundArea = new Rectangle2D.Double(rx, ry, 
+		int targetX = new Random(System.nanoTime()).nextInt(
+				backgroundImage.getWidth(this)
+				- targetImage.getWidth(this)) + topX;
+		int targetY = new Random(System.nanoTime()).nextInt(
+				backgroundImage.getHeight(this)
+				- targetImage.getHeight(this)) + topY;
+		
+		backgroundArea = new Rectangle2D.Double(topX, topY, 
 				backgroundImage.getWidth(this),
 				backgroundImage.getHeight(this));
 				
-		targetArea = new Rectangle2D.Double(rx, ry,
-				10,
-				10);
+		targetArea = new Rectangle2D.Double(targetX, targetY,
+				targetImage.getWidth(this),
+				targetImage.getHeight(this));
 
 		this.repaint();
 	}

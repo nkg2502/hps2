@@ -1,25 +1,15 @@
 package tsj.hps;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.Random;
-
-import tsj.hps.ds.ExperimentData;
-import tsj.hps.ds.ImageNode;
-import tsj.hps.ds.ShuffleNode;
-
+import java.io.*;
+import java.util.*;
+import tsj.hps.ds.*;
 /**
  * Image list dispatcher
  * 
  * @author Taesung Jung 
  *
  */
-public class Dispatcher {
+public class Dispatcher extends Observable {
 	
 	/* maybe no need
 	private File backgroundPath = null;
@@ -69,45 +59,42 @@ public class Dispatcher {
 		if(0 >= targetImageList.size())
 			throw new IllegalArgumentException("Target directory is empty!");
 		
-		// Initialize backgroundImageList and targetImageList
+		// shuffle background images and target images
+		List<File> shuffledBackgroundImageList = shuffle(backgroundImageList, targetImageList.size(), targetImageList.size());
+		List<File> shuffledTargetImageList = shuffle(targetImageList, backgroundImageList.size(), 0);
 		
-		// TODO: add ramdomize algorithm
-		List<ShuffleNode> rawImageList = new ArrayList<ShuffleNode>();
-		int repeatSize = targetImageList.size();
-		for(File backgroundImage: backgroundImageList) 
-			rawImageList.add(new ShuffleNode(backgroundImage, repeatSize - 1));
+		int imageListSize = shuffledBackgroundImageList.size();
+		for(int i = 0; i < imageListSize; ++i)
+			shuffledImageList.add(new ImageNode(shuffledBackgroundImageList.get(i),
+					shuffledTargetImageList.get(i)));
+		
+		Manager.PRINT_ALL(shuffledImageList, "shuffledImageList");
+	}
+	
+	private static List<File> shuffle(List<File> list, int repeat, int interval) {
+		
+		List<File> shuffledList = new ArrayList<File>();
 		
 		// randomize algorithm
-		// TODO: 타겟도 잘 섞어야 할 거 같다. 
+		List<ShuffleNode> shuffleNodeList = new ArrayList<ShuffleNode>();
+		for(File image: list) 
+			shuffleNodeList.add(new ShuffleNode(image, repeat - 1));
+		
 		Queue<ShuffleNode> excludedQueue = new LinkedList<ShuffleNode>();
 		List<ShuffleNode> candidateList = new ArrayList<ShuffleNode>();
 		
-		Collections.shuffle(rawImageList, 
+		Collections.shuffle(shuffleNodeList, 
 				new Random(System.nanoTime()));
 		
-		for(ShuffleNode i: rawImageList)
-			shuffledImageList.add(new ImageNode(i.getBackgroundImage()));
+		// initial list
+		for(ShuffleNode i: shuffleNodeList)
+			shuffledList.add(i.getImage());
 		
-		for(ShuffleNode i: rawImageList) {
-			System.out.println("raw" + i);
-		}
-		System.out.println();
+		while(0 < shuffleNodeList.size() - interval)
+			candidateList.add(shuffleNodeList.remove(0));
 		
-		while(0 < rawImageList.size() - repeatSize)
-			candidateList.add(rawImageList.remove(0));
-		
-		while(0 < rawImageList.size())
-			excludedQueue.add(rawImageList.remove(0));
-		
-		for(ShuffleNode i: candidateList) {
-			System.out.println("candi " + i);
-		}
-		System.out.println();
-	
-		for(ShuffleNode i: excludedQueue) {
-			System.out.println("ex " + i);
-		}
-		System.out.println();
+		while(0 < shuffleNodeList.size())
+			excludedQueue.add(shuffleNodeList.remove(0));
 		
 		while(0 < candidateList.size() || 0 < excludedQueue.size()) {
 			Collections.shuffle(candidateList, 
@@ -120,7 +107,7 @@ public class Dispatcher {
 			
 			if(null != popItem) {
 				
-				shuffledImageList.add(new ImageNode(popItem.getBackgroundImage()));
+				shuffledList.add(popItem.getImage());
 				
 				popItem.used();
 				if(popItem.canRepeat())
@@ -131,36 +118,7 @@ public class Dispatcher {
 				candidateList.add(excludedQueue.remove());
 		}
 		
-		Collections.shuffle(targetImageList, 
-				new Random(System.nanoTime()));
-		
-		// TODO: 여기 개선
-		int targetIndex = 0;
-		for(ImageNode i: shuffledImageList) {
-			i.setTargetImage(targetImageList.get(targetIndex));
-			
-			++targetIndex;
-			if(targetIndex >= targetImageList.size())
-				targetIndex = 0;
-		}
-		
-		
-		for(ImageNode i: shuffledImageList) {
-			System.out.println("last " + i);
-		}
-		System.out.println();
-	
-		
-	}
-	
-	@Deprecated
-	public File popBackgroundImage() {
-		return null;
-	}
-	
-	@Deprecated
-	public File popTargetImage() {
-		return null;
+		return shuffledList;
 	}
 	
 	public ImageNode popImage() {
@@ -177,4 +135,8 @@ public class Dispatcher {
 		experimentDataList.add(data);
 	}
 	
+	public void endNotify() {
+		this.setChanged();
+		this.notifyObservers(experimentDataList);
+	}
 }

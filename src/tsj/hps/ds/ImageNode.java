@@ -7,8 +7,9 @@ public class ImageNode {
 	private File backgroundImage = null;
 	private File targetImage = null;
 	
-	public ImageNode(File backgroundImage) {
+	public ImageNode(File backgroundImage, File targetImage) {
 		this.backgroundImage = backgroundImage;
+		this.targetImage = targetImage;
 	}
 	
 	public File getBackgroundImage() {

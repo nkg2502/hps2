@@ -4,20 +4,20 @@ import java.io.File;
 
 public class ShuffleNode {
 	
-	private File backgroundImage = null;
+	private File image = null;
 	private int repeat = 0;
 	
-	public ShuffleNode(File backgroundImage, int repeat) {
-		this.backgroundImage = backgroundImage;
+	public ShuffleNode(File image, int repeat) {
+		this.image = image;
 		this.repeat = repeat; 
 	}
 
-	public File getBackgroundImage() {
-		return backgroundImage;
+	public File getImage() {
+		return image;
 	}
 
-	public void setBackgroundImage(File backgroundImage) {
-		this.backgroundImage = backgroundImage;
+	public void setImage(File image) {
+		this.image = image;
 	}
 
 	public int getRepeat() {
@@ -38,6 +38,6 @@ public class ShuffleNode {
 	
 	@Override
 	public String toString() {
-		return this.backgroundImage.getName() + ":" + repeat;
+		return this.image.getName() + ":" + repeat;
 	}
 }
