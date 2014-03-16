@@ -127,7 +127,7 @@ public class Manager implements Observer {
 			e.printStackTrace();
 		}
 		
-		// TODO: modify TODAY
+		// FIXME: modify TODAY
 		reportWriter.println("Date, " + "TODAY");
 		reportWriter.println("Gender, " + GENDER(gender));
 		reportWriter.println("Age, " + age);
@@ -141,7 +141,7 @@ public class Manager implements Observer {
 		
 		for(ExperimentData i: resultList) {
 			
-			// TODO: modify TODAY
+			// FIXME: modify TODAY
 			reportWriter.print("TODAY");
 			reportWriter.print(",");
 			reportWriter.print(GENDER(gender));

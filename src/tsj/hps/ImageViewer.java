@@ -66,6 +66,7 @@ public class ImageViewer extends JPanel {
 	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	
 	/**
+	 * draw background image and target image
 	 * 
 	 * @param showTimeInterval
 	 * @param breakTimeInterval
@@ -173,7 +174,7 @@ public class ImageViewer extends JPanel {
 			// draw target image
 			g.drawImage(targetImage, (int) targetArea.getX(), (int) targetArea.getY(), this);
 			
-			// FOR DEBUGGING
+			// FIXME: FOR DEBUGGING
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setPaint(Color.WHITE);
 			g2.draw(backgroundArea);
@@ -230,7 +231,7 @@ public class ImageViewer extends JPanel {
 		int topX = (screenSize.width - backgroundImage.getWidth(this)) / 2;
 		int topY = (screenSize.height - backgroundImage.getHeight(this)) / 2;
 		
-		// TODO: if target bigger than background
+		// FIXME: if target bigger than background
 		int targetX = new Random(System.nanoTime()).nextInt(
 				backgroundImage.getWidth(this)
 				- targetImage.getWidth(this)) + topX;
@@ -249,6 +250,7 @@ public class ImageViewer extends JPanel {
 		this.repaint();
 	}
 	
+	// TODO: modify code below
 	private Image loadImage(File imageFile) {
 		
 		if(null == imageFile)
