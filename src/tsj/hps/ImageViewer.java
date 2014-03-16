@@ -223,6 +223,7 @@ public class ImageViewer extends JPanel {
 		int topX = (screenSize.width - backgroundImage.getWidth(this)) / 2;
 		int topY = (screenSize.height - backgroundImage.getHeight(this)) / 2;
 		
+		// TODO: if target bigger than background
 		int targetX = new Random(System.nanoTime()).nextInt(
 				backgroundImage.getWidth(this)
 				- targetImage.getWidth(this)) + topX;
