@@ -98,8 +98,6 @@ public class Manager implements Observer {
 	
 	public void writeReport(List<ExperimentData> resultList) {
 		
-		PRINT_ALL(resultList, "RESULT");
-		
 		GregorianCalendar now = new GregorianCalendar();
 		String reportFileName = String.format("%4d.%02d.%02d[%02d.%02d.%02d].%s.%02d.csv",
 				now.get(Calendar.YEAR),
@@ -129,6 +127,7 @@ public class Manager implements Observer {
 			e.printStackTrace();
 		}
 		
+		// TODO: modify TODAY
 		reportWriter.println("Date, " + "TODAY");
 		reportWriter.println("Gender, " + GENDER(gender));
 		reportWriter.println("Age, " + age);
@@ -141,6 +140,8 @@ public class Manager implements Observer {
 		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status");
 		
 		for(ExperimentData i: resultList) {
+			
+			// TODO: modify TODAY
 			reportWriter.print("TODAY");
 			reportWriter.print(",");
 			reportWriter.print(GENDER(gender));
@@ -178,17 +179,14 @@ public class Manager implements Observer {
 	}
 	
 	@Override
-	public String toString() {
-		return "";
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public void update(Observable o, Object arg) {
 		
 		writeReport((List<ExperimentData>) arg);
+		System.exit(0);
 	}
 	
+	// FOR DEBUGGING
 	public static void PRINT_ALL(Iterable<?> list, String msg) {
 		for(Object i: list) {
 			System.out.println("[" + msg + "]: " + i);

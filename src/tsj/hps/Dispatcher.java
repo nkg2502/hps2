@@ -1,8 +1,19 @@
 package tsj.hps;
 
-import java.io.*;
-import java.util.*;
-import tsj.hps.ds.*;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Observable;
+import java.util.Queue;
+import java.util.Random;
+
+import tsj.hps.ds.ExperimentData;
+import tsj.hps.ds.ImageNode;
+import tsj.hps.ds.ShuffleNode;
+
 /**
  * Image list dispatcher
  * 
@@ -10,16 +21,6 @@ import tsj.hps.ds.*;
  *
  */
 public class Dispatcher extends Observable {
-	
-	/* maybe no need
-	private File backgroundPath = null;
-	private File targetPath = null;
-	
-	private List<File> backgroundImageList = null;
-	
-	private List<File> targetImageList = null;
-	
-	*/
 	
 	private List<ImageNode> shuffledImageList = new ArrayList<ImageNode>();
 
@@ -67,8 +68,6 @@ public class Dispatcher extends Observable {
 		for(int i = 0; i < imageListSize; ++i)
 			shuffledImageList.add(new ImageNode(shuffledBackgroundImageList.get(i),
 					shuffledTargetImageList.get(i)));
-		
-		Manager.PRINT_ALL(shuffledImageList, "shuffledImageList");
 	}
 	
 	private static List<File> shuffle(List<File> list, int repeat, int interval) {

@@ -1,6 +1,15 @@
 package tsj.hps;
 
-import java.awt.*;
+import java.awt.AWTException;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,9 +24,8 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.Timer;
-
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import tsj.hps.ds.ExperimentData;
 import tsj.hps.ds.ImageNode;
@@ -206,8 +214,7 @@ public class ImageViewer extends JPanel {
 			showTimer.stop();
 			
 			dispatcher.endNotify();
-			
-			System.exit(0);
+			return;
 		}
 		
 		File backgroundFile = imageNode.getBackgroundImage();
