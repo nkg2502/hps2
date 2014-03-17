@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -22,6 +24,9 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
 public class Main {
 
 	/**
@@ -30,10 +35,26 @@ public class Main {
 	 */
 	public static void main(String[] args)
 	{
-		init();
+		// load predefined values
+		String predefinedShowTimeInterval = null;
+		String predefinedBreakTimeInterval = null;
+		
+		try {
+			JSONObject predefinedSetting = (JSONObject) JSONValue.parse((new FileReader(new File(Manager.SETTING_FILE))));
+			predefinedShowTimeInterval = predefinedSetting.get("showTimeInterval").toString();
+			predefinedBreakTimeInterval = predefinedSetting.get("breakTimeInterval").toString();
+			
+		} catch(FileNotFoundException e) {
+			;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		// TODO: modify UI
+		init(predefinedShowTimeInterval, predefinedBreakTimeInterval);
 	}
 
-	public static void init() {
+	public static void init(String predefinedShowTimeInterval, String predefinedBreakTimeInterval) {
 		
 		final JFrame mainFrame = new JFrame();
 		mainFrame.setTitle("Human Predator System : Testing camouflage using digital photograhps");
@@ -81,7 +102,12 @@ public class Main {
 		final JTextField ageField = new JTextField(4);
 		
 		final JTextField showTimeField = new JTextField(6);
+		showTimeField.setText((String) (null != predefinedShowTimeInterval 
+				? predefinedShowTimeInterval : ""));
+	
 		final JTextField breakTimeField = new JTextField(6);
+		breakTimeField.setText((String) (null != predefinedBreakTimeInterval 
+				? predefinedBreakTimeInterval : ""));
 		
 		final JRadioButton femaleRadioButton = new JRadioButton("Female", true);
 		final JRadioButton maleRadioButton = new JRadioButton("Male", false);

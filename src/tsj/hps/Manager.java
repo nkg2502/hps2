@@ -21,6 +21,7 @@ import tsj.hps.ds.ExperimentData;
  */
 public class Manager implements Observer {
 	
+	public final static String SETTING_FILE = "setting.json";
 	public final static boolean FEMALE = true;
 	public final static boolean MALE = false;
 	

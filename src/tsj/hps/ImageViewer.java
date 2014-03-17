@@ -270,7 +270,6 @@ public class ImageViewer extends JPanel {
 		this.repaint();
 	}
 	
-	// TODO: modify code below
 	private Image loadImage(File imageFile) {
 		
 		if(null == imageFile)
@@ -280,7 +279,7 @@ public class ImageViewer extends JPanel {
 		try {
 			loadedImage = ImageIO.read(imageFile);
 		} catch(IOException e) {
-			// TODO: more information
+			System.err.println("ERROR: target image is missing!");
 			e.printStackTrace();
 		} catch(Exception e) {
 			e.printStackTrace();
