@@ -15,7 +15,7 @@ import tsj.hps.ds.ImageNode;
 import tsj.hps.ds.ShuffleNode;
 
 /**
- * Image list dispatcher
+ * background image and target image dispatcher
  * 
  * @author Taesung Jung 
  *

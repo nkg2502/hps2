@@ -96,7 +96,7 @@ public class DataManager implements Observer {
 		this.targetPath = targetPath;
 	}
 	
-	// TODO: summary report
+	// FIXME: summary report
 	public void writeSummaryReport(List<ExperimentData> resultList, 
 			PrintWriter reportWriter) {
 		
@@ -161,6 +161,7 @@ public class DataManager implements Observer {
 		reportWriter.println("Background Folder, " + backgroundPath.getAbsolutePath());
 		reportWriter.println("Target Folder, " + targetPath.getAbsolutePath());
 		
+		// FIXME: summaryReport, don't need system.out
 		writeSummaryReport(resultList, new PrintWriter(System.out));
 		
 		reportWriter.println();
@@ -223,13 +224,11 @@ public class DataManager implements Observer {
 		}
 	}
 	
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void update(Observable o, Object arg) {
 		
 		writeReport((List<ExperimentData>) arg);
-		System.exit(0);
 	}
 	
 	// FOR DEBUGGING

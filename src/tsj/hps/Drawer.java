@@ -37,7 +37,7 @@ import tsj.hps.ds.ImageNode;
  *
  */
 public class Drawer extends JPanel {
-
+	
 	/**
 	 * Secret signature
 	 */
@@ -69,6 +69,12 @@ public class Drawer extends JPanel {
 	private Robot robot;
 	private Cursor blackCursor = Toolkit.getDefaultToolkit().createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "BLANK_CURSOR");
 	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	
+	private static final ActionListener nullActionListener = new ActionListener() {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {}
+	};
 	
 	/**
 	 * draw background image and target image
@@ -291,8 +297,9 @@ public class Drawer extends JPanel {
 	}
 	
 	private void endExperiment() {
-		showTimer.setActionCommand(null);
-		breakTimer.setActionCommand(null);
+
+		showTimer = new Timer(0, nullActionListener);
+		breakTimer = new Timer(0, nullActionListener);
 
 		dispatcher.endNotify();
 	}
