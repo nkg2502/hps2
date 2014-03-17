@@ -1,4 +1,4 @@
-package tsj.hps;
+package tsj.hps.view;
 
 import java.awt.AWTException;
 import java.awt.Color;
@@ -29,6 +29,7 @@ import javax.swing.Timer;
 
 import tsj.hps.ds.ExperimentData;
 import tsj.hps.ds.ImageNode;
+import tsj.hps.model.Dispatcher;
 
 /**
  * ImageViewer
@@ -36,7 +37,7 @@ import tsj.hps.ds.ImageNode;
  * @author Taesung Jung
  *
  */
-public class Drawer extends JPanel {
+public class ImageViewer extends JPanel {
 	
 	/**
 	 * Secret signature
@@ -83,7 +84,7 @@ public class Drawer extends JPanel {
 	 * @param breakTimeInterval
 	 * @param dispatcher
 	 */
-	public Drawer(int showTimeInterval, int breakTimeInterval, Dispatcher dispatcher, boolean godMode) throws AWTException {
+	public ImageViewer(int showTimeInterval, int breakTimeInterval, Dispatcher dispatcher, boolean godMode) throws AWTException {
 		
 		this.dispatcher = dispatcher;
 		this.godMode = godMode;

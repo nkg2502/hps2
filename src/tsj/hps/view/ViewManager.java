@@ -1,4 +1,4 @@
-package tsj.hps;
+package tsj.hps.view;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -7,6 +7,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.*;
+
+import tsj.hps.model.DataManager;
+import tsj.hps.model.Dispatcher;
 
 public class ViewManager implements Observer {
 	
@@ -151,7 +154,7 @@ public class ViewManager implements Observer {
 					dispatcher.addObserver(dataManager);
 					dispatcher.addObserver(ViewManager.getInstance());
 					
-					mainFrame.add(new Drawer(dataManager.getShowTimeInterval(), 
+					mainFrame.add(new ImageViewer(dataManager.getShowTimeInterval(), 
 							dataManager.getBreakTimeInterval(), 
 							dispatcher,
 							1020 == dataManager.getAge()));

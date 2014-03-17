@@ -1,4 +1,4 @@
-package tsj.hps;
+package tsj.hps.model;
 
 import java.io.BufferedWriter;
 import java.io.File;

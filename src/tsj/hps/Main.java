@@ -7,6 +7,9 @@ import java.io.FileReader;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import tsj.hps.model.DataManager;
+import tsj.hps.view.ViewManager;
+
 public class Main {
 
 	/**
