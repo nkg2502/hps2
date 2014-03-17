@@ -19,15 +19,21 @@ import tsj.hps.ds.ExperimentData;
  * @author Taesung Jung 
  *
  */
-public class Manager implements Observer {
+public class DataManager implements Observer {
 	
 	public final static String SETTING_FILE = "setting.json";
 	public final static boolean FEMALE = true;
 	public final static boolean MALE = false;
 	
-	private final static Manager instance = new Manager();
+	private final static int FOUND = 0;
+	private final static int PASSED = 1;
+	private final static int MISS_CLICKED = 2;
+	private final static int TIMEOUT = 3;
+	private final static int ERROR = 4;
+	private final static int STATUS_SIZE = 5;
 	
-	private Dispatcher dispatcher = null;
+	private final static DataManager instance = new DataManager();
+	
 	
 	private int age = 0;
 	private boolean gender = FEMALE;
@@ -36,17 +42,10 @@ public class Manager implements Observer {
 	private File backgroundPath = null;
 	private File targetPath = null; 
 	
-	private Manager() {}
+	private DataManager() {}
 	
-	public static Manager getInstance() {
+	public static DataManager getInstance() {
 		return instance;
-	}
-	
-	public Dispatcher getDispatcher() {
-		this.dispatcher = new Dispatcher(backgroundPath, targetPath);
-		this.dispatcher.addObserver(this);
-		
-		return this.dispatcher;
 	}
 
 	public int getAge() {
@@ -97,6 +96,26 @@ public class Manager implements Observer {
 		this.targetPath = targetPath;
 	}
 	
+	// TODO: summary report
+	public void writeSummaryReport(List<ExperimentData> resultList, 
+			PrintWriter reportWriter) {
+		
+		int[] counter = new int[STATUS_SIZE];
+		
+		for(int i = 0; i < STATUS_SIZE; ++i)
+			counter[i] = 0;
+		
+		for(ExperimentData i: resultList) {
+			++counter[STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval)];
+		}
+		
+		for(int i: counter) {
+			System.out.println("" + i);
+			
+		}
+		System.out.println();
+	}
+	
 	public void writeReport(List<ExperimentData> resultList) {
 		
 		GregorianCalendar now = new GregorianCalendar();
@@ -142,6 +161,8 @@ public class Manager implements Observer {
 		reportWriter.println("Background Folder, " + backgroundPath.getAbsolutePath());
 		reportWriter.println("Target Folder, " + targetPath.getAbsolutePath());
 		
+		writeSummaryReport(resultList, new PrintWriter(System.out));
+		
 		reportWriter.println();
 		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status");
 		
@@ -160,7 +181,7 @@ public class Manager implements Observer {
 			reportWriter.print(",");
 			reportWriter.print(i.getTime());
 			reportWriter.print(",");
-			reportWriter.print(STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval));
+			reportWriter.print(STATUS_2_STRING(STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval)));
 			reportWriter.println();
 		}
 		
@@ -172,19 +193,36 @@ public class Manager implements Observer {
 		return (FEMALE == type ? "Female" : "Male");
 	}
 	
-	private static String STATUS(boolean isFound, boolean isPassed, long time, long maxTime) {
+	private static int STATUS(boolean isFound, boolean isPassed, long time, long maxTime) {
 		
 		if(0 > time) 
-			return "ERROR";
+			return ERROR;
 		else if(time >= maxTime)
-			return "Timeout";
+			return TIMEOUT;
 		else if(isFound)
-			return "Found";
+			return FOUND;
 		else if(isPassed)
-			return "Passed";
+			return PASSED;
 		else
-			return "Miss Clicked";
+			return MISS_CLICKED;
 	}
+	
+	private static String STATUS_2_STRING(int status) {
+		
+		switch(status) {
+			case FOUND:
+				return "Found";
+			case PASSED:
+				return "Passed";
+			case MISS_CLICKED:
+				return "Miss Clicked";
+			case TIMEOUT:
+				return "Timeout";
+			default:
+				return "Error";
+		}
+	}
+	
 	
 	@Override
 	@SuppressWarnings("unchecked")

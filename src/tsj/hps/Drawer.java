@@ -36,7 +36,7 @@ import tsj.hps.ds.ImageNode;
  * @author Taesung Jung
  *
  */
-public class ImageViewer extends JPanel {
+public class Drawer extends JPanel {
 
 	/**
 	 * Secret signature
@@ -77,7 +77,7 @@ public class ImageViewer extends JPanel {
 	 * @param breakTimeInterval
 	 * @param dispatcher
 	 */
-	public ImageViewer(int showTimeInterval, int breakTimeInterval, Dispatcher dispatcher, boolean godMode) throws AWTException {
+	public Drawer(int showTimeInterval, int breakTimeInterval, Dispatcher dispatcher, boolean godMode) throws AWTException {
 		
 		this.dispatcher = dispatcher;
 		this.godMode = godMode;
@@ -206,7 +206,9 @@ public class ImageViewer extends JPanel {
 		data.setTargetName(targetName);
 		data.setFound(isFound);
 		data.setPassed(isPassed);
-		data.setTime((new GregorianCalendar()).getTimeInMillis() - startTime);
+		
+		// added 5 due to timer difference
+		data.setTime((new GregorianCalendar()).getTimeInMillis() - startTime + 5);
 		
 		dispatcher.addExperimentData(data);
 		
@@ -258,7 +260,7 @@ public class ImageViewer extends JPanel {
 			data.setTargetName(targetName);
 			data.setFound(false);
 			data.setPassed(false);
-			data.setTime(-1);
+			data.setTime(-891020);
 			dispatcher.addExperimentData(data);
 			
 			endExperiment();

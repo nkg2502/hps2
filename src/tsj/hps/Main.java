@@ -35,15 +35,14 @@ public class Main {
 	 */
 	public static void main(String[] args)
 	{
-		// load predefined values
+		// read predefined values
 		String predefinedShowTimeInterval = null;
 		String predefinedBreakTimeInterval = null;
 		
 		try {
-			JSONObject predefinedSetting = (JSONObject) JSONValue.parse((new FileReader(new File(Manager.SETTING_FILE))));
+			JSONObject predefinedSetting = (JSONObject) JSONValue.parse((new FileReader(new File(DataManager.SETTING_FILE))));
 			predefinedShowTimeInterval = predefinedSetting.get("showTimeInterval").toString();
 			predefinedBreakTimeInterval = predefinedSetting.get("breakTimeInterval").toString();
-			
 		} catch(FileNotFoundException e) {
 			;
 		} catch(Exception e) {
@@ -94,6 +93,7 @@ public class Main {
 			}
 		});
 		
+		// FIXME: added . + directory name
 		for(File i: directories) {
 			backgroundComboBox.addItem(i);
 			targetComboBox.addItem(i);
@@ -122,13 +122,13 @@ public class Main {
 			@Override
 			public void actionPerformed(ActionEvent event)
 			{
-				Manager manager = Manager.getInstance();
+				DataManager manager = DataManager.getInstance();
 				
 				try {
 					manager.setBackgroundPath((File) backgroundComboBox.getSelectedItem());
 					manager.setTargetPath((File) targetComboBox.getSelectedItem());
 					manager.setAge(Integer.parseInt(ageField.getText()));
-					manager.setGender(femaleRadioButton.isSelected() ? Manager.FEMALE : Manager.MALE);
+					manager.setGender(femaleRadioButton.isSelected() ? DataManager.FEMALE : DataManager.MALE);
 					manager.setShowTimeInterval(Integer.parseInt(showTimeField.getText()));
 					manager.setBreakTimeInterval(Integer.parseInt(breakTimeField.getText()));
 					
@@ -145,9 +145,12 @@ public class Main {
 				experimentDialog.setVisible(false);
 				
 				try {
-					mainFrame.add(new ImageViewer(manager.getShowTimeInterval(), 
+					Dispatcher dispatcher = new Dispatcher(manager.getBackgroundPath(), manager.getTargetPath());
+					dispatcher.addObserver(manager);
+					
+					mainFrame.add(new Drawer(manager.getShowTimeInterval(), 
 							manager.getBreakTimeInterval(), 
-							manager.getDispatcher(),
+							dispatcher,
 							1020 == manager.getAge()));
 				} catch(Exception e) {
 					e.printStackTrace();
@@ -156,7 +159,7 @@ public class Main {
 					
 				// start experiment
 				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(mainFrame);
-				mainFrame.setVisible(true);
+				mainFrame.setVisible(false);
 			}
 		});
 		
@@ -191,4 +194,6 @@ public class Main {
 		
 		return panel;
 	}
+
+
 }
