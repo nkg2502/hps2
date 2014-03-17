@@ -42,6 +42,11 @@ public class ImageViewer extends JPanel {
 	 * Secret signature
 	 */
 	private static final long serialVersionUID = 19891020200000L;
+	
+	/**
+	 * For debugging
+	 */
+	private boolean godMode = false;
 
 	private Dispatcher dispatcher;
 	
@@ -72,9 +77,11 @@ public class ImageViewer extends JPanel {
 	 * @param breakTimeInterval
 	 * @param dispatcher
 	 */
-	public ImageViewer(int showTimeInterval, int breakTimeInterval, Dispatcher dispatcher) throws AWTException {
+	public ImageViewer(int showTimeInterval, int breakTimeInterval, Dispatcher dispatcher, boolean godMode) throws AWTException {
 		
 		this.dispatcher = dispatcher;
+		this.godMode = godMode;
+		
 		this.robot = new Robot();
 		
 		isShowTime = false;
@@ -174,11 +181,13 @@ public class ImageViewer extends JPanel {
 			// draw target image
 			g.drawImage(targetImage, (int) targetArea.getX(), (int) targetArea.getY(), this);
 			
-			// FIXME: FOR DEBUGGING
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setPaint(Color.WHITE);
-			g2.draw(backgroundArea);
-			g2.draw(targetArea);
+			// for debugging
+			if(godMode) {
+				Graphics2D g2 = (Graphics2D) g;
+				g2.setPaint(Color.WHITE);
+				g2.draw(backgroundArea);
+				g2.draw(targetArea);
+			}
 		}
 	}
 	

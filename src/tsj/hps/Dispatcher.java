@@ -22,6 +22,9 @@ import tsj.hps.ds.ShuffleNode;
  */
 public class Dispatcher extends Observable {
 	
+	/**
+	 * Shuffled background image and target image List
+	 */
 	private List<ImageNode> shuffledImageList = new ArrayList<ImageNode>();
 
 	/**

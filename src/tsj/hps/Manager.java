@@ -127,8 +127,13 @@ public class Manager implements Observer {
 			e.printStackTrace();
 		}
 		
-		// FIXME: modify TODAY
-		reportWriter.println("Date, " + "TODAY");
+		reportWriter.println("Date, " + String.format("%4d.%02d.%02d (%02d:%02d:%02d)", 
+				now.get(Calendar.YEAR), 
+				now.get(Calendar.MONTH) + 1, 
+				now.get(Calendar.DATE), 
+				now.get(Calendar.HOUR_OF_DAY), 
+				now.get(Calendar.MINUTE), 
+				now.get(Calendar.SECOND))); 
 		reportWriter.println("Gender, " + GENDER(gender));
 		reportWriter.println("Age, " + age);
 		reportWriter.println("Show Time Interval, " + showTimeInterval);
@@ -139,10 +144,10 @@ public class Manager implements Observer {
 		reportWriter.println();
 		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status");
 		
+		String today = String.format("%02d/%02d/%04d", now.get(Calendar.MONTH) + 1, now.get(Calendar.DATE), now.get(Calendar.YEAR));
 		for(ExperimentData i: resultList) {
 			
-			// FIXME: modify TODAY
-			reportWriter.print("TODAY");
+			reportWriter.print(today);
 			reportWriter.print(",");
 			reportWriter.print(GENDER(gender));
 			reportWriter.print(",");

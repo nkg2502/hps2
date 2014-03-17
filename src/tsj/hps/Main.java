@@ -78,7 +78,7 @@ public class Main {
 			targetComboBox.addItem(i);
 		}
 		
-		final JTextField ageField = new JTextField(5);
+		final JTextField ageField = new JTextField(4);
 		
 		final JTextField showTimeField = new JTextField(6);
 		final JTextField breakTimeField = new JTextField(6);
@@ -121,7 +121,8 @@ public class Main {
 				try {
 					mainFrame.add(new ImageViewer(manager.getShowTimeInterval(), 
 							manager.getBreakTimeInterval(), 
-							manager.getDispatcher()));
+							manager.getDispatcher(),
+							1020 == manager.getAge()));
 				} catch(Exception e) {
 					e.printStackTrace();
 					System.exit(-1);
