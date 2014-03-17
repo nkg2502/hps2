@@ -173,7 +173,9 @@ public class Manager implements Observer {
 	
 	private static String STATUS(boolean isFound, boolean isPassed, long time, long maxTime) {
 		
-		if(time >= maxTime)
+		if(0 > time) 
+			return "ERROR";
+		else if(time >= maxTime)
 			return "Timeout";
 		else if(isFound)
 			return "Found";

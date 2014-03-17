@@ -220,10 +220,7 @@ public class ImageViewer extends JPanel {
 		// end experiment
 		if(null == imageNode) {
 			
-			breakTimer.stop();
-			showTimer.stop();
-			
-			dispatcher.endNotify();
+			endExperiment();
 			return;
 		}
 		
@@ -234,27 +231,41 @@ public class ImageViewer extends JPanel {
 		targetName = targetFile.getName();
 		
 		backgroundImage = loadImage(backgroundFile);
-		
 		targetImage = loadImage(targetFile);
 				
 		int topX = (screenSize.width - backgroundImage.getWidth(this)) / 2;
 		int topY = (screenSize.height - backgroundImage.getHeight(this)) / 2;
 		
-		// FIXME: if target bigger than background
-		int targetX = new Random(System.nanoTime()).nextInt(
-				backgroundImage.getWidth(this)
-				- targetImage.getWidth(this)) + topX;
-		int targetY = new Random(System.nanoTime()).nextInt(
-				backgroundImage.getHeight(this)
-				- targetImage.getHeight(this)) + topY;
-		
-		backgroundArea = new Rectangle2D.Double(topX, topY, 
-				backgroundImage.getWidth(this),
-				backgroundImage.getHeight(this));
-				
-		targetArea = new Rectangle2D.Double(targetX, targetY,
-				targetImage.getWidth(this),
-				targetImage.getHeight(this));
+		try {
+			int targetX = new Random(System.nanoTime()).nextInt(
+					backgroundImage.getWidth(this)
+					- targetImage.getWidth(this)) + topX;
+			int targetY = new Random(System.nanoTime()).nextInt(
+					backgroundImage.getHeight(this)
+					- targetImage.getHeight(this)) + topY;
+			
+			backgroundArea = new Rectangle2D.Double(topX, topY, 
+					backgroundImage.getWidth(this),
+					backgroundImage.getHeight(this));
+			targetArea = new Rectangle2D.Double(targetX, targetY,
+					targetImage.getWidth(this),
+					targetImage.getHeight(this));
+		} catch(IllegalArgumentException e) {
+			System.err.println("ERROR: target image is bigger than background image!");
+			
+			ExperimentData data = new ExperimentData();
+			data.setBackgroundName(backgroundName);
+			data.setTargetName(targetName);
+			data.setFound(false);
+			data.setPassed(false);
+			data.setTime(-1);
+			dispatcher.addExperimentData(data);
+			
+			endExperiment();
+			return;
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 
 		this.repaint();
 	}
@@ -277,6 +288,11 @@ public class ImageViewer extends JPanel {
 		
 		return loadedImage;
 	}
-
 	
+	private void endExperiment() {
+		showTimer.setActionCommand(null);
+		breakTimer.setActionCommand(null);
+
+		dispatcher.endNotify();
+	}
 }
