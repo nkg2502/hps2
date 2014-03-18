@@ -32,7 +32,6 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		// TODO: modify UI
 		ViewManager viewManager = ViewManager.getInstance();
 		viewManager.init();
 		viewManager.experimentDialog(predefinedShowTimeInterval, predefinedBreakTimeInterval);

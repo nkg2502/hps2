@@ -25,15 +25,14 @@ public class DataManager implements Observer {
 	public final static boolean FEMALE = true;
 	public final static boolean MALE = false;
 	
-	private final static int FOUND = 0;
-	private final static int PASSED = 1;
-	private final static int MISS_CLICKED = 2;
-	private final static int TIMEOUT = 3;
-	private final static int ERROR = 4;
-	private final static int STATUS_SIZE = 5;
+	public final static int FOUND = 0;
+	public final static int PASSED = 1;
+	public final static int MISS_CLICKED = 2;
+	public final static int TIMEOUT = 3;
+	public final static int ERROR = 4;
+	public final static int STATUS_SIZE = 5;
 	
 	private final static DataManager instance = new DataManager();
-	
 	
 	private int age = 0;
 	private boolean gender = FEMALE;
@@ -96,25 +95,7 @@ public class DataManager implements Observer {
 		this.targetPath = targetPath;
 	}
 	
-	// FIXME: summary report
-	public void writeSummaryReport(List<ExperimentData> resultList, 
-			PrintWriter reportWriter) {
-		
-		int[] counter = new int[STATUS_SIZE];
-		
-		for(int i = 0; i < STATUS_SIZE; ++i)
-			counter[i] = 0;
-		
-		for(ExperimentData i: resultList) {
-			++counter[STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval)];
-		}
-		
-		for(int i: counter) {
-			System.out.println("" + i);
-			
-		}
-		System.out.println();
-	}
+
 	
 	public void writeReport(List<ExperimentData> resultList) {
 		
@@ -161,8 +142,7 @@ public class DataManager implements Observer {
 		reportWriter.println("Background Folder, " + backgroundPath.getAbsolutePath());
 		reportWriter.println("Target Folder, " + targetPath.getAbsolutePath());
 		
-		// FIXME: summaryReport, don't need system.out
-		writeSummaryReport(resultList, new PrintWriter(System.out));
+		// TODO: summarize Report
 		
 		reportWriter.println();
 		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status");
@@ -188,6 +168,43 @@ public class DataManager implements Observer {
 		
 		reportWriter.close();
 		
+	}
+	
+	/**
+	 * Summarize status.
+	 * 
+	 * @param resultList
+	 * 	Experiment data.
+	 * @return counter
+	 * 	Each status value.
+	 */
+	public static int[] summarizeStatus(List<ExperimentData> resultList) {
+		
+		int[] counter = new int[STATUS_SIZE];
+		
+		for(int i = 0; i < STATUS_SIZE; ++i)
+			counter[i] = 0;
+		
+		long maxTime = DataManager.getInstance().getShowTimeInterval();
+		for(ExperimentData i: resultList) {
+			++counter[STATUS(i.isFound(), i.isPassed(), i.getTime(), maxTime)];
+		}
+		
+		return counter;
+	}
+	
+	/**
+	 * 
+	 * @param resultList
+	 * @return
+	 */
+	public static long summarizeTime(List<ExperimentData> resultList) {
+		
+		long totalTime = 0;
+		for(ExperimentData i: resultList)
+			totalTime += i.getTime();
+		
+		return totalTime;
 	}
 	
 	private static String GENDER(boolean type) {

@@ -5,10 +5,9 @@ import java.io.File;
 public class PrettyNamedFile extends File {
 
 	/**
-	 * 
+	 * Secret signature
 	 */
-	// FIXME: serial number
-	private static final long serialVersionUID = -2288242849733330611L;
+	private static final long serialVersionUID = 19860728163000L;
 
 	public PrettyNamedFile(File parent, String child) {
 		super(parent, child);

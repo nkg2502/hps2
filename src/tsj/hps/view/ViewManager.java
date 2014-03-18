@@ -5,10 +5,12 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.List;
 
 import javax.swing.*;
 
 import tsj.hps.PrettyNamedFile;
+import tsj.hps.ds.ExperimentData;
 import tsj.hps.model.DataManager;
 import tsj.hps.model.Dispatcher;
 
@@ -198,8 +200,10 @@ public class ViewManager implements Observer {
 	}
 	
 	// FIXME: modify UI
-	public void resultDialog() {
+	// FIXME: this!
+	public void resultDialog(List<ExperimentData> resultList) {
 		
+
 		final JDialog resultDialog = new JDialog(mainFrame);
 		resultDialog.setTitle("Human Predator System : Result");
 		resultDialog.setSize(400, 400);
@@ -234,15 +238,17 @@ public class ViewManager implements Observer {
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		resultDialog.setLocation((screenSize.width - 400) / 2, (screenSize.height - 100) / 3);
-	
+		
+		int[] statusCounter = DataManager.summarizeStatus(resultList);
+		long totalTime = DataManager.summarizeTime(resultList);
+		
+		for(int i: statusCounter) {
+			System.out.println("" + i);
+		}
+		
 		// Initialize labels
-		JLabel backgroundImageFolder = new JLabel("Background Image Folder");
-		JLabel targetImageFolder = new JLabel("Target Image Folder");
-		JLabel age = new JLabel("Age");
-		JLabel gender = new JLabel("Gender");
-		JLabel showTimeInterval = new JLabel("Show Time Interval(Unit : miliseconds)");
-		JLabel breakTimeInterval = new JLabel("Break Time Interval(Unit : miliseconds)");
-	
+		JLabel Found = new JLabel("Found: " + statusCounter[DataManager.FOUND]);
+		JLabel Passed = new JLabel("Passed: " + statusCounter[DataManager.PASSED]);
 	
 		final JButton startButton = new JButton("       Exit       ");
 		startButton.addActionListener(new ActionListener() {
@@ -260,8 +266,8 @@ public class ViewManager implements Observer {
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" "), new JLabel("Time spent")));
 		panel.add(generateBoxPanel(BoxLayout.X_AXIS, new JLabel(" "), new JLabel("Total")));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel("Average")));
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
+		panel.add(generateBoxPanel(BoxLayout.X_AXIS, new JLabel(" "), Found));
+		panel.add(generateBoxPanel(BoxLayout.X_AXIS, new JLabel(" "), Passed));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
 		panel.add(startButton);
 	
@@ -279,11 +285,13 @@ public class ViewManager implements Observer {
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public void update(Observable o, Object arg) {
 		
+		// hide main frame
 		GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(null);
 		mainFrame.setVisible(false);
 		
-		resultDialog();
+		resultDialog((List<ExperimentData>) arg);
 	}
 }
