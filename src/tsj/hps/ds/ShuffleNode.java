@@ -2,6 +2,12 @@ package tsj.hps.ds;
 
 import java.io.File;
 
+/**
+ * Uses background image shuffle algorithm.
+ * 
+ * @author Taesung Jung
+ *
+ */
 public class ShuffleNode {
 	
 	private File image = null;

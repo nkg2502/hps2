@@ -8,9 +8,16 @@ import java.util.Observer;
 
 import javax.swing.*;
 
+import tsj.hps.PrettyNamedFile;
 import tsj.hps.model.DataManager;
 import tsj.hps.model.Dispatcher;
 
+/**
+ * Manage all frame and dialog.
+ * 
+ * @author Taesung Jung
+ *
+ */
 public class ViewManager implements Observer {
 	
 
@@ -98,10 +105,9 @@ public class ViewManager implements Observer {
 			}
 		});
 		
-		// FIXME: added . + directory name
 		for(File i: directories) {
-			backgroundComboBox.addItem(i);
-			targetComboBox.addItem(i);
+			backgroundComboBox.addItem(new PrettyNamedFile(i, ""));
+			targetComboBox.addItem(new PrettyNamedFile(i, ""));
 		}
 		
 		final JTextField ageField = new JTextField(4);
@@ -251,9 +257,9 @@ public class ViewManager implements Observer {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 	
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" "), new JLabel("Time spent")));
+		panel.add(generateBoxPanel(BoxLayout.X_AXIS, new JLabel(" "), new JLabel("Total")));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel("Average")));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));

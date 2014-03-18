@@ -9,22 +9,28 @@ package tsj.hps.ds;
 public class ExperimentData {
 	
 	/**
-	 * Background image name
+	 * Background image name.
 	 */
 	private String backgroundName;
 	
 	/**
-	 * Target image name
+	 * Target image name.
 	 */
 	private String targetName;
 	
 	/**
-	 * Found time
+	 * Found time.
 	 */
 	private long time;
 	
+	/**
+	 * 
+	 */
 	private boolean isFound = false;
 	
+	/**
+	 * 
+	 */
 	private boolean isPassed = false;
 	
 	public void setBackgroundName(String name) {

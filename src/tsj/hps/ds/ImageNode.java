@@ -2,6 +2,11 @@ package tsj.hps.ds;
 
 import java.io.File;
 
+/**
+ * 
+ * @author Taesung Jung
+ *
+ */
 public class ImageNode {
 	
 	private File backgroundImage = null;
