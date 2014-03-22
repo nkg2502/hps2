@@ -1,6 +1,7 @@
 package tsj.hps.ds;
 
 import java.awt.Point;
+import java.io.File;
 
 /**
  * Experiment Result
@@ -13,12 +14,12 @@ public class ExperimentData {
 	/**
 	 * Background image name.
 	 */
-	private String backgroundName;
+	private File backgroundPath;
 	
 	/**
 	 * Target image name.
 	 */
-	private String targetName;
+	private File targetPath;
 	
 	/**
 	 * Found time.
@@ -41,12 +42,12 @@ public class ExperimentData {
 	 */
 	private Point targetPoint = new Point(0, 0);
 	
-	public void setBackgroundName(String name) {
-		this.backgroundName = name;
+	public void setBackgroundPath(File path) {
+		this.backgroundPath = path;
 	}
 	
-	public void setTargetName(String name) {
-		this.targetName = name;
+	public void setTargetPath(File path) {
+		this.targetPath = path;
 	}
 	
 	public void setTime(long time) {
@@ -61,12 +62,12 @@ public class ExperimentData {
 		this.isPassed = isPassed;
 	}
 
-	public String getBackgroundName() {
-		return backgroundName;
+	public File getBackgroundPath() {
+		return backgroundPath;
 	}
 
-	public String getTargetName() {
-		return targetName;
+	public File getTargetPath() {
+		return targetPath;
 	}
 
 	public long getTime() {
@@ -92,8 +93,8 @@ public class ExperimentData {
 	@Override
 	public String toString()
 	{
-		return backgroundName
-			+ ": " + targetName
+		return backgroundPath.getAbsolutePath()
+			+ ": " + targetPath.getAbsolutePath()
 			+ ": " + time
 			+ ":[F] " + isFound
 			+ ":[P] " + isPassed

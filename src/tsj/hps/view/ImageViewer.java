@@ -53,11 +53,12 @@ public class ImageViewer extends JPanel {
 	
 	private Image backgroundImage;
 	private Rectangle2D backgroundArea;
-	private String backgroundName;
+	private File backgroundPath;
 	
 	private Image targetImage;
 	private Rectangle2D targetArea;
-	private String targetName;
+	private File targetPath;
+
 	private int targetX;
 	private int targetY;
 	
@@ -211,8 +212,8 @@ public class ImageViewer extends JPanel {
 		breakTimer.start();
 		
 		ExperimentData data = new ExperimentData();
-		data.setBackgroundName(backgroundName);
-		data.setTargetName(targetName);
+		data.setBackgroundPath(backgroundPath);
+		data.setTargetPath(targetPath);
 		data.setFound(isFound);
 		data.setPassed(isPassed);
 		data.setTargetPoint(targetX, targetY);
@@ -239,8 +240,8 @@ public class ImageViewer extends JPanel {
 		File backgroundFile = imageNode.getBackgroundImage();
 		File targetFile = imageNode.getTargetImage();
 		
-		backgroundName = backgroundFile.getName();
-		targetName = targetFile.getName();
+		backgroundPath = backgroundFile;
+		targetPath = targetFile;
 		
 		backgroundImage = loadImage(backgroundFile);
 		targetImage = loadImage(targetFile);
@@ -266,8 +267,8 @@ public class ImageViewer extends JPanel {
 			System.err.println("ERROR: target image is bigger than background image!");
 			
 			ExperimentData data = new ExperimentData();
-			data.setBackgroundName(backgroundName);
-			data.setTargetName(targetName);
+			data.setBackgroundPath(backgroundPath);
+			data.setTargetPath(targetPath);
 			data.setFound(false);
 			data.setPassed(false);
 			data.setTime(-891020);

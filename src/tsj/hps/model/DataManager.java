@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import tsj.hps.ds.ExperimentData;
 
 /**
@@ -99,8 +102,6 @@ public class DataManager implements Observer {
 		this.targetPath = targetPath;
 	}
 	
-
-	
 	public void writeReport(List<ExperimentData> resultList) {
 		
 		GregorianCalendar now = new GregorianCalendar();
@@ -160,9 +161,9 @@ public class DataManager implements Observer {
 			reportWriter.print(",");
 			reportWriter.print(age);
 			reportWriter.print(",");
-			reportWriter.print(i.getBackgroundName());
+			reportWriter.print(i.getBackgroundPath().getName());
 			reportWriter.print(",");
-			reportWriter.print(i.getTargetName());
+			reportWriter.print(i.getTargetPath().getName());
 			reportWriter.print(",");
 			reportWriter.print(i.getTime());
 			reportWriter.print(",");
@@ -175,9 +176,49 @@ public class DataManager implements Observer {
 		}
 		
 		reportWriter.close();
-		
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void writeReplayLog(List<ExperimentData> resultList) {
+		PrintWriter reportWriter = null;
+		
+		// check result folder
+		File resultFolder = new File("result");
+		if(!resultFolder.isDirectory()) 
+			if(!resultFolder.mkdir()) {
+				System.err.println("ERROR: MAKE result FOLDER!");
+				resultFolder = null;
+			}
+		
+		try {
+			reportWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFolder, "hello.replay"))));
+		} catch(IOException e) {
+			e.printStackTrace();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JSONObject replayObject = new JSONObject();
+		
+		JSONArray replaySequence = new JSONArray();
+		for(ExperimentData i: resultList) {
+			JSONObject item = new JSONObject();
+
+			item.put("backgroundPath", i.getBackgroundPath().getAbsolutePath());
+			item.put("targetPath", i.getTargetPath().getAbsolutePath());
+			item.put("targetX", i.getTargetPoint().x);
+			item.put("targetY", i.getTargetPoint().y);
+			
+			replaySequence.add(item);
+			//replayObject.put(key, value);
+			
+		}
+		
+		reportWriter.println(replayObject);
+	
+		
+	}
 	
 	/**
 	 * Summarize status log.
@@ -262,6 +303,7 @@ public class DataManager implements Observer {
 	public void update(Observable o, Object arg) {
 		
 		writeReport((List<ExperimentData>) arg);
+	
 	}
 	
 	// FOR DEBUGGING

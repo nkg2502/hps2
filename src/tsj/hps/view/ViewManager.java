@@ -33,6 +33,8 @@ import tsj.hps.ds.ExperimentData;
 import tsj.hps.ds.PrettyNamedFile;
 import tsj.hps.model.DataManager;
 import tsj.hps.model.Dispatcher;
+import tsj.hps.model.RandomDispatcher;
+import tsj.hps.model.ReplayDispatcher;
 
 /**
  * Manage all frame and dialog.
@@ -182,7 +184,7 @@ public class ViewManager implements Observer {
 				experimentDialog.setVisible(false);
 				
 				try {
-					Dispatcher dispatcher = new Dispatcher(dataManager.getBackgroundPath(), dataManager.getTargetPath());
+					Dispatcher dispatcher = new RandomDispatcher(dataManager.getBackgroundPath(), dataManager.getTargetPath());
 					dispatcher.addObserver(dataManager);
 					dispatcher.addObserver(ViewManager.getInstance());
 					
@@ -314,6 +316,23 @@ public class ViewManager implements Observer {
 		resultDialog.setVisible(true);
 	}
 	
+	public void replyDialog() {
+
+				try {
+					Dispatcher dispatcher = new ReplayDispatcher(null);
+					
+					mainFrame.add(new ImageViewer(10000, 300, dispatcher, true));
+
+				} catch(Exception e) {
+					e.printStackTrace();
+					System.exit(-1);
+				}
+					
+				// start replay
+				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(mainFrame);
+				mainFrame.setVisible(true);
+		
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")
