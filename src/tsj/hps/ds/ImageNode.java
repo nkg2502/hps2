@@ -7,10 +7,16 @@ import java.io.File;
  * @author Taesung Jung
  *
  */
-public class ImageNode {
+public abstract class ImageNode {
 	
 	private File backgroundImage = null;
 	private File targetImage = null;
+	
+	private int targetX = 0;
+	private int targetY = 0;
+	
+	public abstract int getTargetX(int max);
+	public abstract int getTargetY(int max);
 	
 	public ImageNode(File backgroundImage, File targetImage) {
 		this.backgroundImage = backgroundImage;
@@ -25,6 +31,14 @@ public class ImageNode {
 		return targetImage;
 	}
 	
+	public int getTargetX() {
+		return targetX;
+	}
+	
+	public int getTargetY() {
+		return targetY;
+	}
+	
 	public void setBackgroundImage(File backgroundImage) {
 		this.backgroundImage = backgroundImage;
 	}
@@ -33,9 +47,16 @@ public class ImageNode {
 		this.targetImage = targetImage;
 	}
 	
+	public void setTargetX(int x) {
+		this.targetX = x;
+	}
+
+	public void setTargetY(int y) {
+		this.targetY = y;
+	}
+
 	@Override
 	public String toString() {
 		return this.backgroundImage.getName() + ":" + this.targetImage.getName();
 	}
-
 }

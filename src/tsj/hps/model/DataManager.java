@@ -102,6 +102,7 @@ public class DataManager implements Observer {
 		this.targetPath = targetPath;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void writeReport(List<ExperimentData> resultList) {
 		
 		GregorianCalendar now = new GregorianCalendar();
@@ -150,7 +151,7 @@ public class DataManager implements Observer {
 		// TODO: summarize Report
 		
 		reportWriter.println();
-		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status, targetX, targetY");
+		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status");
 		
 		String today = String.format("%02d/%02d/%04d", now.get(Calendar.MONTH) + 1, now.get(Calendar.DATE), now.get(Calendar.YEAR));
 		for(ExperimentData i: resultList) {
@@ -168,30 +169,15 @@ public class DataManager implements Observer {
 			reportWriter.print(i.getTime());
 			reportWriter.print(",");
 			reportWriter.print(STATUS_2_STRING(STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval)));
-			reportWriter.print(",");
-			reportWriter.print(i.getTargetPoint().x);
-			reportWriter.print(",");
-			reportWriter.print(i.getTargetPoint().y);
 			reportWriter.println();
 		}
 		
 		reportWriter.close();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void writeReplayLog(List<ExperimentData> resultList) {
-		PrintWriter reportWriter = null;
 		
-		// check result folder
-		File resultFolder = new File("result");
-		if(!resultFolder.isDirectory()) 
-			if(!resultFolder.mkdir()) {
-				System.err.println("ERROR: MAKE result FOLDER!");
-				resultFolder = null;
-			}
-		
+		// write replay log
+		PrintWriter logWriter = null;
 		try {
-			reportWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFolder, "hello.replay"))));
+			logWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFolder, reportFileName + ".replay"))));
 		} catch(IOException e) {
 			e.printStackTrace();
 			
@@ -200,6 +186,8 @@ public class DataManager implements Observer {
 		}
 		
 		JSONObject replayObject = new JSONObject();
+		replayObject.put("showTimeInterval", DataManager.getInstance().getShowTimeInterval());
+		replayObject.put("breakTimeInterval", DataManager.getInstance().getBreakTimeInterval());
 		
 		JSONArray replaySequence = new JSONArray();
 		for(ExperimentData i: resultList) {
@@ -211,13 +199,12 @@ public class DataManager implements Observer {
 			item.put("targetY", i.getTargetPoint().y);
 			
 			replaySequence.add(item);
-			//replayObject.put(key, value);
-			
 		}
 		
-		reportWriter.println(replayObject);
-	
+		replayObject.put("replay", replaySequence);
 		
+		logWriter.println(replayObject);
+		logWriter.close();
 	}
 	
 	/**

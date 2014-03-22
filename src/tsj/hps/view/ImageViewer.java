@@ -21,7 +21,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.GregorianCalendar;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -62,6 +61,9 @@ public class ImageViewer extends JPanel {
 	private int targetX;
 	private int targetY;
 	
+	private int topX;
+	private int topY;
+	
 	private long startTime;
 
 	private Timer showTimer;
@@ -96,6 +98,7 @@ public class ImageViewer extends JPanel {
 		
 		isShowTime = false;
 		
+	
 		// add mouse listener
 		this.addMouseListener(new MouseAdapter() {
 			@Override
@@ -216,7 +219,7 @@ public class ImageViewer extends JPanel {
 		data.setTargetPath(targetPath);
 		data.setFound(isFound);
 		data.setPassed(isPassed);
-		data.setTargetPoint(targetX, targetY);
+		data.setTargetPoint(targetX - topX, targetY - topY);
 		
 		// added 5 due to timer difference
 		data.setTime((new GregorianCalendar()).getTimeInMillis() - startTime + 5);
@@ -228,6 +231,7 @@ public class ImageViewer extends JPanel {
 	
 	private void nextImage() {
 		
+	
 		ImageNode imageNode = dispatcher.popImage();
 		
 		// end experiment
@@ -245,17 +249,18 @@ public class ImageViewer extends JPanel {
 		
 		backgroundImage = loadImage(backgroundFile);
 		targetImage = loadImage(targetFile);
-				
-		int topX = (screenSize.width - backgroundImage.getWidth(this)) / 2;
-		int topY = (screenSize.height - backgroundImage.getHeight(this)) / 2;
 		
 		try {
-			targetX = new Random(System.nanoTime()).nextInt(
-					backgroundImage.getWidth(this)
-					- targetImage.getWidth(this)) + topX;
-			targetY = new Random(System.nanoTime()).nextInt(
-					backgroundImage.getHeight(this)
-					- targetImage.getHeight(this)) + topY;
+			int maxX = backgroundImage.getWidth(this)
+					- targetImage.getWidth(this);
+			int maxY = backgroundImage.getHeight(this)
+					- targetImage.getHeight(this);
+
+			topX = (screenSize.width - backgroundImage.getWidth(this)) / 2;
+			topY = (screenSize.height - backgroundImage.getHeight(this)) / 2;
+
+			targetX = imageNode.getTargetX(maxX) + topX;
+			targetY = imageNode.getTargetY(maxY) + topY;
 			
 			backgroundArea = new Rectangle2D.Double(topX, topY, 
 					backgroundImage.getWidth(this),
@@ -263,6 +268,7 @@ public class ImageViewer extends JPanel {
 			targetArea = new Rectangle2D.Double(targetX, targetY,
 					targetImage.getWidth(this),
 					targetImage.getHeight(this));
+			
 		} catch(IllegalArgumentException e) {
 			System.err.println("ERROR: target image is bigger than background image!");
 			

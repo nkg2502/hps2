@@ -23,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -316,22 +317,130 @@ public class ViewManager implements Observer {
 		resultDialog.setVisible(true);
 	}
 	
-	public void replyDialog() {
-
+	// FIXME: refactoring
+	public void replyDialog(String predefinedShowTimeInterval, String predefinedBreakTimeInterval) {
+	
+		final JDialog replayDialog = new JDialog(mainFrame);
+		replayDialog.setTitle("Human Predator System : Replay");
+		replayDialog.setSize(400, 400);
+		replayDialog.setLayout(new FlowLayout());
+		replayDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		replayDialog.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) { }
+			
+			@Override
+			public void windowIconified(WindowEvent e) { }
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) { }
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) { }
+			
+			@Override
+			public void windowClosing(WindowEvent e) { }
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				System.exit(0); 
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) { }
+		});
+		
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		replayDialog.setLocation((screenSize.width - 400) / 2, (screenSize.height - 100) / 3);
+	
+		// Initialize labels
+		JLabel targetImageFolder = new JLabel("Choose replay file");
+		JLabel showTimeInterval = new JLabel("Show Time Interval(Unit : miliseconds)");
+		JLabel breakTimeInterval = new JLabel("Break Time Interval(Unit : miliseconds)");
+		
+		final JFileChooser replayChooser = new JFileChooser(".");
+		
+		final JTextField replayPathField = new JTextField();
+	
+		final JTextField showTimeField = new JTextField(6);
+		showTimeField.setText((String) (null != predefinedShowTimeInterval 
+				? predefinedShowTimeInterval : ""));
+	
+		final JTextField breakTimeField = new JTextField(6);
+		breakTimeField.setText((String) (null != predefinedBreakTimeInterval 
+				? predefinedBreakTimeInterval : ""));
+		
+		final JButton selectButton = new JButton("choose");
+		selectButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent event) {
+				if(JFileChooser.APPROVE_OPTION == replayChooser.showOpenDialog(mainFrame))
+					replayPathField.setText(replayChooser.getSelectedFile().getAbsolutePath());
+			}
+		});
+		
+		
+		final JButton startButton = new JButton("          Replay Start          ");
+		startButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent event)
+			{
+				int showTimeInterval = 30000;
+				int breakTimeInterval = 500;
+				
 				try {
-					Dispatcher dispatcher = new ReplayDispatcher(null);
+					showTimeInterval = Integer.parseInt(showTimeField.getText());
+					breakTimeInterval = Integer.parseInt(breakTimeField.getText());
 					
-					mainFrame.add(new ImageViewer(10000, 300, dispatcher, true));
-
+				} catch(NumberFormatException e) {
+					e.printStackTrace();
+					return;
+					
+				} catch(Exception e) {
+					e.printStackTrace();
+					System.exit(-1);
+				}
+	
+				// hide dialog
+				replayDialog.setVisible(false);
+				
+				try {
+					Dispatcher dispatcher = new ReplayDispatcher(replayPathField.getText());
+					
+					mainFrame.add(new ImageViewer(showTimeInterval,
+							breakTimeInterval, dispatcher,
+							true));
 				} catch(Exception e) {
 					e.printStackTrace();
 					System.exit(-1);
 				}
 					
-				// start replay
+				// start experiment
 				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().setFullScreenWindow(mainFrame);
 				mainFrame.setVisible(true);
+			}
+		});
 		
+		// set up dialog
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+	
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, targetImageFolder));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, selectButton));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, replayPathField));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, showTimeInterval, showTimeField));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, breakTimeInterval, breakTimeField));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
+		panel.add(startButton);
+	
+		replayDialog.add(panel);
+		replayDialog.setVisible(true);
 	}
 
 	@Override

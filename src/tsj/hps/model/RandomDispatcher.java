@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 import java.util.Queue;
 import java.util.Random;
 
 import tsj.hps.ds.ExperimentData;
 import tsj.hps.ds.ImageNode;
+import tsj.hps.ds.RandomImageNode;
 import tsj.hps.ds.ShuffleNode;
 
 /**
@@ -25,7 +25,7 @@ public class RandomDispatcher extends Dispatcher {
 	/**
 	 * Shuffled background image and target image List
 	 */
-	private List<ImageNode> shuffledImageList = new ArrayList<ImageNode>();
+	private List<RandomImageNode> shuffledImageList = new ArrayList<RandomImageNode>();
 
 	/**
 	 * Experiment Result data
@@ -67,7 +67,7 @@ public class RandomDispatcher extends Dispatcher {
 		
 		int imageListSize = shuffledBackgroundImageList.size();
 		for(int i = 0; i < imageListSize; ++i)
-			shuffledImageList.add(new ImageNode(shuffledBackgroundImageList.get(i),
+			shuffledImageList.add(new RandomImageNode(shuffledBackgroundImageList.get(i),
 					shuffledTargetImageList.get(i)));
 	}
 	
