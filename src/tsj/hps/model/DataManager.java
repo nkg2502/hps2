@@ -149,7 +149,7 @@ public class DataManager implements Observer {
 		// TODO: summarize Report
 		
 		reportWriter.println();
-		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status");
+		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status, targetX, targetY");
 		
 		String today = String.format("%02d/%02d/%04d", now.get(Calendar.MONTH) + 1, now.get(Calendar.DATE), now.get(Calendar.YEAR));
 		for(ExperimentData i: resultList) {
@@ -167,6 +167,10 @@ public class DataManager implements Observer {
 			reportWriter.print(i.getTime());
 			reportWriter.print(",");
 			reportWriter.print(STATUS_2_STRING(STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval)));
+			reportWriter.print(",");
+			reportWriter.print(i.getTargetPoint().x);
+			reportWriter.print(",");
+			reportWriter.print(i.getTargetPoint().y);
 			reportWriter.println();
 		}
 		

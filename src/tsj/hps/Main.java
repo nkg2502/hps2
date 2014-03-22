@@ -18,6 +18,7 @@ public class Main {
 	 */
 	public static void main(String[] args)
 	{
+		// TODO: store target position
 		// read predefined values
 		String predefinedShowTimeInterval = null;
 		String predefinedBreakTimeInterval = null;

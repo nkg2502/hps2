@@ -35,6 +35,10 @@ public class ExperimentData {
 	 */
 	private boolean isPassed = false;
 	
+	/**
+	 * Target's left top point.
+	 * 
+	 */
 	private Point targetPoint = new Point(0, 0);
 	
 	public void setBackgroundName(String name) {
@@ -93,6 +97,7 @@ public class ExperimentData {
 			+ ": " + time
 			+ ":[F] " + isFound
 			+ ":[P] " + isPassed
+			+ ":(" + targetPoint.x + ", " + targetPoint.y + ")"
 			;
 	}
 }
