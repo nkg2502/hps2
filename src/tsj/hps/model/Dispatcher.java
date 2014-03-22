@@ -85,10 +85,13 @@ public class Dispatcher extends Observable {
 		
 		Collections.shuffle(shuffleNodeList, 
 				new Random(System.nanoTime()));
-		
+	
 		// initial list
 		for(ShuffleNode i: shuffleNodeList)
 			shuffledList.add(i.getImage());
+		
+		if(2 > repeat)
+			return shuffledList; 
 		
 		while(0 < shuffleNodeList.size() - interval)
 			candidateList.add(shuffleNodeList.remove(0));

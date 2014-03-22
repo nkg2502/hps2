@@ -58,6 +58,8 @@ public class ImageViewer extends JPanel {
 	private Image targetImage;
 	private Rectangle2D targetArea;
 	private String targetName;
+	private int targetX;
+	private int targetY;
 	
 	private long startTime;
 
@@ -213,6 +215,7 @@ public class ImageViewer extends JPanel {
 		data.setTargetName(targetName);
 		data.setFound(isFound);
 		data.setPassed(isPassed);
+		data.setTargetPoint(targetX, targetY);
 		
 		// added 5 due to timer difference
 		data.setTime((new GregorianCalendar()).getTimeInMillis() - startTime + 5);
@@ -246,10 +249,10 @@ public class ImageViewer extends JPanel {
 		int topY = (screenSize.height - backgroundImage.getHeight(this)) / 2;
 		
 		try {
-			int targetX = new Random(System.nanoTime()).nextInt(
+			targetX = new Random(System.nanoTime()).nextInt(
 					backgroundImage.getWidth(this)
 					- targetImage.getWidth(this)) + topX;
-			int targetY = new Random(System.nanoTime()).nextInt(
+			targetY = new Random(System.nanoTime()).nextInt(
 					backgroundImage.getHeight(this)
 					- targetImage.getHeight(this)) + topY;
 			

@@ -21,12 +21,17 @@ public class Main {
 		// read predefined values
 		String predefinedShowTimeInterval = null;
 		String predefinedBreakTimeInterval = null;
+		String predefinedAge = null;
 		
 		try {
 			JSONObject predefinedSetting = (JSONObject) JSONValue.parse((new FileReader(new File(DataManager.SETTING_FILE))));
 			predefinedShowTimeInterval = predefinedSetting.get("showTimeInterval").toString();
 			predefinedBreakTimeInterval = predefinedSetting.get("breakTimeInterval").toString();
+			predefinedAge = predefinedSetting.get("age").toString();
+			
 		} catch(FileNotFoundException e) {
+			;
+		} catch(NullPointerException e) {
 			;
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -34,6 +39,6 @@ public class Main {
 
 		ViewManager viewManager = ViewManager.getInstance();
 		viewManager.init();
-		viewManager.experimentDialog(predefinedShowTimeInterval, predefinedBreakTimeInterval);
+		viewManager.experimentDialog(predefinedShowTimeInterval, predefinedBreakTimeInterval, predefinedAge);
 	}
 }

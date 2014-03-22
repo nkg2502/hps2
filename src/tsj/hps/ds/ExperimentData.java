@@ -1,5 +1,7 @@
 package tsj.hps.ds;
 
+import java.awt.Point;
+
 /**
  * Experiment Result
  * 
@@ -33,6 +35,8 @@ public class ExperimentData {
 	 */
 	private boolean isPassed = false;
 	
+	private Point targetPoint = new Point(0, 0);
+	
 	public void setBackgroundName(String name) {
 		this.backgroundName = name;
 	}
@@ -45,41 +49,42 @@ public class ExperimentData {
 		this.time = time;
 	}
 	
-	public void setFound(boolean isFound)
-	{
+	public void setFound(boolean isFound) {
 		this.isFound = isFound;
 	}
 
-	public void setPassed(boolean isPassed)
-	{
+	public void setPassed(boolean isPassed) {
 		this.isPassed = isPassed;
 	}
 
-	public String getBackgroundName()
-	{
+	public String getBackgroundName() {
 		return backgroundName;
 	}
 
-	public String getTargetName()
-	{
+	public String getTargetName() {
 		return targetName;
 	}
 
-	public long getTime()
-	{
+	public long getTime() {
 		return time;
 	}
 
-	public boolean isFound()
-	{
+	public boolean isFound() {
 		return isFound;
 	}
 
-	public boolean isPassed()
-	{
+	public boolean isPassed() {
 		return isPassed;
 	}
 	
+	public Point getTargetPoint() {
+		return targetPoint;
+	}
+
+	public void setTargetPoint(int x, int y) {
+		this.targetPoint = new Point(x, y);
+	}
+
 	@Override
 	public String toString()
 	{

@@ -25,12 +25,16 @@ public class DataManager implements Observer {
 	public final static boolean FEMALE = true;
 	public final static boolean MALE = false;
 	
-	public final static int FOUND = 0;
-	public final static int PASSED = 1;
-	public final static int MISS_CLICKED = 2;
-	public final static int TIMEOUT = 3;
-	public final static int ERROR = 4;
-	public final static int STATUS_SIZE = 5;
+	public final static int USER_FOUND = 0;
+	public final static int USER_PASSED = 1;
+	public final static int USER_MISS_CLICKED = 2;
+	public final static int USER_TIMEOUT = 3;
+	public final static int USER_ERROR = 4;
+	private final static int USER_STATUS_SUMMARY_SIZE = 5;
+	
+	public final static int TIME_TOTAL = 0;
+	public final static int TIME_USED = 1;
+	private final static int TIME_SUMMARY_SIZE = 2;
 	
 	private final static DataManager instance = new DataManager();
 	
@@ -170,8 +174,9 @@ public class DataManager implements Observer {
 		
 	}
 	
+	
 	/**
-	 * Summarize status.
+	 * Summarize status log.
 	 * 
 	 * @param resultList
 	 * 	Experiment data.
@@ -180,31 +185,38 @@ public class DataManager implements Observer {
 	 */
 	public static int[] summarizeStatus(List<ExperimentData> resultList) {
 		
-		int[] counter = new int[STATUS_SIZE];
+		int[] summary = new int[USER_STATUS_SUMMARY_SIZE];
 		
-		for(int i = 0; i < STATUS_SIZE; ++i)
-			counter[i] = 0;
+		for(int i = 0; i < USER_STATUS_SUMMARY_SIZE; ++i)
+			summary[i] = 0;
 		
 		long maxTime = DataManager.getInstance().getShowTimeInterval();
 		for(ExperimentData i: resultList) {
-			++counter[STATUS(i.isFound(), i.isPassed(), i.getTime(), maxTime)];
+			++summary[STATUS(i.isFound(), i.isPassed(), i.getTime(), maxTime)];
 		}
 		
-		return counter;
+		return summary;
 	}
 	
 	/**
+	 * Summarize time log.
 	 * 
 	 * @param resultList
 	 * @return
 	 */
-	public static long summarizeTime(List<ExperimentData> resultList) {
+	public static long[] summarizeTime(List<ExperimentData> resultList) {
 		
-		long totalTime = 0;
+		long[] summary = new long[TIME_SUMMARY_SIZE];
+		
+		for(int i = 0; i < TIME_SUMMARY_SIZE; ++i) 
+			summary[i] = 0;
+		
+		summary[TIME_TOTAL] = DataManager.getInstance().getShowTimeInterval() * resultList.size();
+			
 		for(ExperimentData i: resultList)
-			totalTime += i.getTime();
+			summary[TIME_USED] += i.getTime();
 		
-		return totalTime;
+		return summary;
 	}
 	
 	private static String GENDER(boolean type) {
@@ -214,27 +226,27 @@ public class DataManager implements Observer {
 	private static int STATUS(boolean isFound, boolean isPassed, long time, long maxTime) {
 		
 		if(0 > time) 
-			return ERROR;
+			return USER_ERROR;
 		else if(time >= maxTime)
-			return TIMEOUT;
+			return USER_TIMEOUT;
 		else if(isFound)
-			return FOUND;
+			return USER_FOUND;
 		else if(isPassed)
-			return PASSED;
+			return USER_PASSED;
 		else
-			return MISS_CLICKED;
+			return USER_MISS_CLICKED;
 	}
 	
 	private static String STATUS_2_STRING(int status) {
 		
 		switch(status) {
-			case FOUND:
+			case USER_FOUND:
 				return "Found";
-			case PASSED:
+			case USER_PASSED:
 				return "Passed";
-			case MISS_CLICKED:
+			case USER_MISS_CLICKED:
 				return "Miss Clicked";
-			case TIMEOUT:
+			case USER_TIMEOUT:
 				return "Timeout";
 			default:
 				return "Error";

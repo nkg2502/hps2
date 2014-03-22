@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.swing.*;
 
-import tsj.hps.PrettyNamedFile;
 import tsj.hps.ds.ExperimentData;
+import tsj.hps.ds.PrettyNamedFile;
 import tsj.hps.model.DataManager;
 import tsj.hps.model.Dispatcher;
 
@@ -48,8 +48,10 @@ public class ViewManager implements Observer {
 	 * 	show time interval
 	 * @param predefinedBreakTimeInterval
 	 * 	break time interval
+	 * @param predefinedAge 
+	 * 	age
 	 */
-	public void experimentDialog(String predefinedShowTimeInterval, String predefinedBreakTimeInterval) {
+	public void experimentDialog(String predefinedShowTimeInterval, String predefinedBreakTimeInterval, String predefinedAge) {
 		
 		final JDialog experimentDialog = new JDialog(mainFrame);
 		experimentDialog.setTitle("Human Predator System : Testing camouflage using digital photograhps");
@@ -113,6 +115,8 @@ public class ViewManager implements Observer {
 		}
 		
 		final JTextField ageField = new JTextField(4);
+		ageField.setText((String) (null != predefinedAge
+				? predefinedAge : ""));
 		
 		final JTextField showTimeField = new JTextField(6);
 		showTimeField.setText((String) (null != predefinedShowTimeInterval 
@@ -129,7 +133,7 @@ public class ViewManager implements Observer {
 		genderGroup.add(femaleRadioButton);
 		genderGroup.add(maleRadioButton);
 		
-		final JButton startButton = new JButton("       Start       ");
+		final JButton startButton = new JButton("          Start          ");
 		startButton.addActionListener(new ActionListener() {
 			
 			@Override
@@ -180,6 +184,7 @@ public class ViewManager implements Observer {
 		// set up dialog
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 	
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, backgroundImageFolder, backgroundComboBox));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
@@ -199,10 +204,7 @@ public class ViewManager implements Observer {
 		experimentDialog.setVisible(true);
 	}
 	
-	// FIXME: modify UI
-	// FIXME: this!
 	public void resultDialog(List<ExperimentData> resultList) {
-		
 
 		final JDialog resultDialog = new JDialog(mainFrame);
 		resultDialog.setTitle("Human Predator System : Result");
@@ -237,53 +239,62 @@ public class ViewManager implements Observer {
 	
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		resultDialog.setLocation((screenSize.width - 400) / 2, (screenSize.height - 100) / 3);
+		resultDialog.setLocation((screenSize.width - 300) / 2, (screenSize.height - 100) / 3);
 		
-		int[] statusCounter = DataManager.summarizeStatus(resultList);
-		long totalTime = DataManager.summarizeTime(resultList);
+		int[] statusSummary = DataManager.summarizeStatus(resultList);
+		long[] timeSummary = DataManager.summarizeTime(resultList);
 		
-		for(int i: statusCounter) {
-			System.out.println("" + i);
-		}
+		JLabel summary = new JLabel("Summary");
+		summary.setFont(new Font(null, Font.BOLD, 30));
 		
-		// Initialize labels
-		JLabel Found = new JLabel("Found: " + statusCounter[DataManager.FOUND]);
-		JLabel Passed = new JLabel("Passed: " + statusCounter[DataManager.PASSED]);
-	
-		final JButton startButton = new JButton("       Exit       ");
-		startButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				System.exit(0);
-			}
-		});
-
+		JLabel timeSpent = new JLabel("Time Spent ");
+		timeSpent.setFont(new Font(null, Font.PLAIN, 25));
+		
+		JLabel user = new JLabel("User");
+		user.setFont(new Font(null, Font.PLAIN, 25));
+		
+		JLabel timeTotal = new JLabel("                Total: " + TIME_SUMMARY_FORMAT(timeSummary[DataManager.TIME_TOTAL]));
+		timeTotal.setFont(new Font(null, Font.PLAIN, 15));
+		
+		JLabel timeUsed = new JLabel("                Used: " + TIME_SUMMARY_FORMAT(timeSummary[DataManager.TIME_USED]));
+		timeUsed.setFont(new Font(null, Font.PLAIN, 15));
+		
+		JLabel timeAverage = new JLabel("           Average: " + TIME_SUMMARY_FORMAT((long) ((float) timeSummary[DataManager.TIME_USED] / (resultList.size()))));
+		timeAverage.setFont(new Font(null, Font.PLAIN, 15));
+		
+		JLabel frog = new JLabel("              Found: " + USER_SUMMARY_FORMAT(statusSummary[DataManager.USER_FOUND], resultList.size()));
+		frog.setFont(new Font(null, Font.PLAIN, 15));
+		
+		JLabel passed = new JLabel("            Passed: " + USER_SUMMARY_FORMAT(statusSummary[DataManager.USER_PASSED], resultList.size()));
+		passed.setFont(new Font(null, Font.PLAIN, 15));
+		
+		JLabel missClicked = new JLabel("    Miss Clicked: " + USER_SUMMARY_FORMAT(statusSummary[DataManager.USER_MISS_CLICKED], resultList.size()));
+		missClicked.setFont(new Font(null, Font.PLAIN, 15));
+		
+		JLabel timeout = new JLabel("           Timeout: " + USER_SUMMARY_FORMAT(statusSummary[DataManager.USER_TIMEOUT], resultList.size()));
+		timeout.setFont(new Font(null, Font.PLAIN, 15));
+		
 		// set up dialog
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 	
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" "), new JLabel("Time spent")));
-		panel.add(generateBoxPanel(BoxLayout.X_AXIS, new JLabel(" "), new JLabel("Total")));
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel("Average")));
-		panel.add(generateBoxPanel(BoxLayout.X_AXIS, new JLabel(" "), Found));
-		panel.add(generateBoxPanel(BoxLayout.X_AXIS, new JLabel(" "), Passed));
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
-		panel.add(startButton);
-	
+		panel.add(summary);
+		panel.add(timeSpent);
+		panel.add(timeTotal);
+		panel.add(timeUsed);
+		panel.add(timeAverage);
+		panel.add(user);
+		panel.add(frog);
+		panel.add(passed);
+		panel.add(missClicked);
+		panel.add(timeout);
+		
 		resultDialog.add(panel);
 		resultDialog.setVisible(true);
 	}
 	
-	private static JPanel generateBoxPanel(int axis, JComponent... args) {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, axis));
-		for(JComponent i: args)
-			panel.add(i);
-		
-		return panel;
-	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public void update(Observable o, Object arg) {
@@ -294,4 +305,24 @@ public class ViewManager implements Observer {
 		
 		resultDialog((List<ExperimentData>) arg);
 	}
+	
+	private static JPanel generateBoxPanel(int axis, JComponent... args) {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, axis));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		for(JComponent i: args)
+			panel.add(i);
+		
+		return panel;
+	}
+	
+	private static String USER_SUMMARY_FORMAT(int numerator, int denominator) {
+		return String.format("%3d / %3d = %3.2f%%", numerator, denominator, (float) 100 * numerator / denominator);
+	}
+	
+	private static String TIME_SUMMARY_FORMAT(long time) {
+		return String.format("%.4f seconds", (float) time / 1000);
+	}
+	
 }
