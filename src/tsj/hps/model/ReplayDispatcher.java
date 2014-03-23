@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.simple.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import tsj.hps.ds.ExperimentData;
 import tsj.hps.ds.ImageNode;
@@ -19,7 +21,6 @@ public class ReplayDispatcher extends Dispatcher {
 	 */
 	private List<ReplayImageNode> replayList = new ArrayList<ReplayImageNode>();
 
-	// FIXME: refactoring
 	public ReplayDispatcher(String replayPath) {
 		
 		try {
@@ -34,13 +35,17 @@ public class ReplayDispatcher extends Dispatcher {
 	
 				int targetX = Integer.parseInt(replayItem.get("targetX").toString());
 				int targetY = Integer.parseInt(replayItem.get("targetY").toString());
+
+				String extra = "";
+				Object status = replayItem.get("status");
+				if(null != status)
+					extra = status.toString();
 				
 				if(!backgroundImage.exists() || !targetImage.exists())
 					throw new NullPointerException();
 			
-				replayList.add(new ReplayImageNode(backgroundImage, targetImage, targetX, targetY));
+				replayList.add(new ReplayImageNode(backgroundImage, targetImage, targetX, targetY, extra));
 			}
-			
 			
 		} catch(FileNotFoundException e) {
 			e.printStackTrace();
@@ -48,11 +53,11 @@ public class ReplayDispatcher extends Dispatcher {
 			e.printStackTrace();
 		} catch(NullPointerException e) {
 			e.printStackTrace();
+			System.exit(-891020);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	@Override
 	public ImageNode popImage() {

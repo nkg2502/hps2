@@ -148,8 +148,6 @@ public class DataManager implements Observer {
 		reportWriter.println("Background Folder, " + backgroundPath.getAbsolutePath());
 		reportWriter.println("Target Folder, " + targetPath.getAbsolutePath());
 		
-		// TODO: summarize Report
-		
 		reportWriter.println();
 		reportWriter.println("Date, Gender, Age, Back Image, Target Image, Time, Status");
 		
@@ -186,8 +184,8 @@ public class DataManager implements Observer {
 		}
 		
 		JSONObject replayObject = new JSONObject();
-		replayObject.put("showTimeInterval", DataManager.getInstance().getShowTimeInterval());
-		replayObject.put("breakTimeInterval", DataManager.getInstance().getBreakTimeInterval());
+		replayObject.put("showTimeInterval", showTimeInterval);
+		replayObject.put("breakTimeInterval", breakTimeInterval);
 		
 		JSONArray replaySequence = new JSONArray();
 		for(ExperimentData i: resultList) {
@@ -197,7 +195,7 @@ public class DataManager implements Observer {
 			item.put("targetPath", i.getTargetPath().getAbsolutePath());
 			item.put("targetX", i.getTargetPoint().x);
 			item.put("targetY", i.getTargetPoint().y);
-			
+			item.put("status", (STATUS_2_STRING(STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval))));
 			replaySequence.add(item);
 		}
 		
@@ -250,6 +248,14 @@ public class DataManager implements Observer {
 		
 		return summary;
 	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public void update(Observable o, Object arg) {
+		
+		writeReport((List<ExperimentData>) arg);
+	
+	}
 	
 	private static String GENDER(boolean type) {
 		return (FEMALE == type ? "Female" : "Male");
@@ -283,14 +289,6 @@ public class DataManager implements Observer {
 			default:
 				return "Error";
 		}
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public void update(Observable o, Object arg) {
-		
-		writeReport((List<ExperimentData>) arg);
-	
 	}
 	
 	// FOR DEBUGGING

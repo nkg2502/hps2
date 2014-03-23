@@ -8,10 +8,11 @@ public class ReplayImageNode extends ImageNode {
 		super(backgroundImage, targetImage);
 	}
 	
-	public ReplayImageNode(File backgroundImage, File targetImage, int targetX, int targetY) {
+	public ReplayImageNode(File backgroundImage, File targetImage, int targetX, int targetY, String extra) {
 		super(backgroundImage, targetImage);
 		setTargetX(targetX);
 		setTargetY(targetY);
+		setExtra(extra);
 	}
 	
 	@Override

@@ -20,6 +20,7 @@ import java.util.Observer;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -78,7 +79,7 @@ public class ViewManager implements Observer {
 		
 		final JDialog experimentDialog = new JDialog(mainFrame);
 		experimentDialog.setTitle("Human Predator System : Testing camouflage using digital photograhps");
-		experimentDialog.setSize(400, 400);
+		experimentDialog.setSize(400, 500);
 		experimentDialog.setLayout(new FlowLayout());
 		experimentDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		experimentDialog.addWindowListener(new WindowListener() {
@@ -156,6 +157,8 @@ public class ViewManager implements Observer {
 		genderGroup.add(femaleRadioButton);
 		genderGroup.add(maleRadioButton);
 		
+		final JCheckBox once = new JCheckBox("Once");
+		
 		final JButton startButton = new JButton("          Start          ");
 		startButton.addActionListener(new ActionListener() {
 			
@@ -185,7 +188,7 @@ public class ViewManager implements Observer {
 				experimentDialog.setVisible(false);
 				
 				try {
-					Dispatcher dispatcher = new RandomDispatcher(dataManager.getBackgroundPath(), dataManager.getTargetPath());
+					Dispatcher dispatcher = new RandomDispatcher(dataManager.getBackgroundPath(), dataManager.getTargetPath(), once.isSelected());
 					dispatcher.addObserver(dataManager);
 					dispatcher.addObserver(ViewManager.getInstance());
 					
@@ -215,7 +218,7 @@ public class ViewManager implements Observer {
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
 		panel.add(generateBoxPanel(BoxLayout.X_AXIS, age, ageField));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
-		panel.add(generateBoxPanel(BoxLayout.X_AXIS, gender, femaleRadioButton, maleRadioButton));
+		panel.add(generateBoxPanel(BoxLayout.X_AXIS, gender, femaleRadioButton, maleRadioButton, once));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, showTimeInterval, showTimeField));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
@@ -317,12 +320,11 @@ public class ViewManager implements Observer {
 		resultDialog.setVisible(true);
 	}
 	
-	// FIXME: refactoring
 	public void replyDialog(String predefinedShowTimeInterval, String predefinedBreakTimeInterval) {
 	
 		final JDialog replayDialog = new JDialog(mainFrame);
 		replayDialog.setTitle("Human Predator System : Replay");
-		replayDialog.setSize(400, 400);
+		replayDialog.setSize(300, 400);
 		replayDialog.setLayout(new FlowLayout());
 		replayDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		replayDialog.addWindowListener(new WindowListener() {
@@ -355,11 +357,23 @@ public class ViewManager implements Observer {
 		replayDialog.setLocation((screenSize.width - 400) / 2, (screenSize.height - 100) / 3);
 	
 		// Initialize labels
-		JLabel targetImageFolder = new JLabel("Choose replay file");
+		JLabel choose = new JLabel("Choose replay file");
 		JLabel showTimeInterval = new JLabel("Show Time Interval(Unit : miliseconds)");
 		JLabel breakTimeInterval = new JLabel("Break Time Interval(Unit : miliseconds)");
 		
 		final JFileChooser replayChooser = new JFileChooser(".");
+		replayChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return null;
+			}
+			
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || f.getName().endsWith(".replay");
+			}
+		});
 		
 		final JTextField replayPathField = new JTextField();
 	
@@ -380,7 +394,6 @@ public class ViewManager implements Observer {
 					replayPathField.setText(replayChooser.getSelectedFile().getAbsolutePath());
 			}
 		});
-		
 		
 		final JButton startButton = new JButton("          Replay Start          ");
 		startButton.addActionListener(new ActionListener() {
@@ -429,9 +442,8 @@ public class ViewManager implements Observer {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 	
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, targetImageFolder));
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, selectButton));
-		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, replayPathField));
+		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, choose));
+		panel.add(generateBoxPanel(BoxLayout.X_AXIS, replayPathField, selectButton));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, showTimeInterval, showTimeField));
 		panel.add(generateBoxPanel(BoxLayout.Y_AXIS, new JLabel(" ")));

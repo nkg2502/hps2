@@ -15,6 +15,8 @@ public abstract class ImageNode {
 	private int targetX = 0;
 	private int targetY = 0;
 	
+	private String extra = "";
+	
 	public abstract int getTargetX(int max);
 	public abstract int getTargetY(int max);
 	
@@ -38,6 +40,10 @@ public abstract class ImageNode {
 	public int getTargetY() {
 		return targetY;
 	}
+
+	public String getExtra() {
+		return extra;
+	}
 	
 	public void setBackgroundImage(File backgroundImage) {
 		this.backgroundImage = backgroundImage;
@@ -53,6 +59,10 @@ public abstract class ImageNode {
 
 	public void setTargetY(int y) {
 		this.targetY = y;
+	}
+	
+	public void setExtra(String extra) {
+		this.extra = extra;
 	}
 
 	@Override

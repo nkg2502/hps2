@@ -43,7 +43,7 @@ public class RandomDispatcher extends Dispatcher {
 		}
 	}
 	
-	public RandomDispatcher(File backgroundPath, File targetPath) {
+	public RandomDispatcher(File backgroundPath, File targetPath, boolean isOnce) {
 		
 		// Initialize backgroundImageList
 		List<File> backgroundImageList = new ArrayList<File>();
@@ -62,9 +62,19 @@ public class RandomDispatcher extends Dispatcher {
 			throw new IllegalArgumentException("Target directory is empty!");
 		
 		// shuffle background images and target images
-		List<File> shuffledBackgroundImageList = shuffle(backgroundImageList, targetImageList.size(), targetImageList.size());
-		List<File> shuffledTargetImageList = shuffle(targetImageList, backgroundImageList.size(), 0);
+		List<File> shuffledBackgroundImageList = shuffle(backgroundImageList, isOnce ? 1 : targetImageList.size(), targetImageList.size());
+		List<File> shuffledTargetImageList = shuffle(targetImageList, isOnce ? 1 : backgroundImageList.size(), 0);
 		
+		// for more target image list
+		List<File> candidateTargetImageList = new ArrayList<File>(targetImageList);
+
+		int candidateIndex = 0;
+		while(backgroundImageList.size() > targetImageList.size()) {
+			if(candidateTargetImageList.size() <= candidateIndex)
+				candidateIndex = 0;
+			targetImageList.add(candidateTargetImageList.get(candidateIndex++));
+		}
+
 		int imageListSize = shuffledBackgroundImageList.size();
 		for(int i = 0; i < imageListSize; ++i)
 			shuffledImageList.add(new RandomImageNode(shuffledBackgroundImageList.get(i),

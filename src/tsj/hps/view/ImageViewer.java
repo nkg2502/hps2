@@ -4,6 +4,7 @@ import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -44,9 +45,16 @@ public class ImageViewer extends JPanel {
 	private static final long serialVersionUID = 19891020200000L;
 	
 	/**
-	 * For debugging
+	 * For replay
 	 */
 	private boolean godMode = false;
+	
+	/**
+	 * For replay scene
+	 */
+	private int sceneNumber = 0;
+	
+	private String status = "";
 
 	private Dispatcher dispatcher;
 	
@@ -70,7 +78,7 @@ public class ImageViewer extends JPanel {
 	
 	private Timer breakTimer;
 	
-	private boolean isShowTime;
+	private boolean isShowTime = false;
 	
 	private Robot robot;
 	private Cursor blackCursor = Toolkit.getDefaultToolkit().createCustomCursor(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), new Point(0, 0), "BLANK_CURSOR");
@@ -89,16 +97,15 @@ public class ImageViewer extends JPanel {
 	 * @param breakTimeInterval
 	 * @param dispatcher
 	 */
-	public ImageViewer(int showTimeInterval, int breakTimeInterval, Dispatcher dispatcher, boolean godMode) throws AWTException {
+	public ImageViewer(int showTimeInterval, int breakTimeInterval, Dispatcher dispatcher, boolean isGodMode) throws AWTException {
 		
 		this.dispatcher = dispatcher;
-		this.godMode = godMode;
+		this.godMode = isGodMode;
 		
 		this.robot = new Robot();
 		
-		isShowTime = false;
+		this.isShowTime = false;
 		
-	
 		// add mouse listener
 		this.addMouseListener(new MouseAdapter() {
 			@Override
@@ -123,6 +130,9 @@ public class ImageViewer extends JPanel {
 			{
 				if(isShowTime && KeyEvent.VK_SPACE == event.getKeyCode())
 					verify(false, true);
+
+				if(godMode && KeyEvent.VK_ESCAPE == event.getKeyCode())
+					System.exit(0);
 			}
 			
 			@Override
@@ -194,12 +204,18 @@ public class ImageViewer extends JPanel {
 			// draw target image
 			g.drawImage(targetImage, (int) targetArea.getX(), (int) targetArea.getY(), this);
 			
-			// for debugging
+			// for godMode
 			if(godMode) {
 				Graphics2D g2 = (Graphics2D) g;
 				g2.setPaint(Color.WHITE);
 				g2.draw(backgroundArea);
 				g2.draw(targetArea);
+				g2.setFont(new Font(null, Font.BOLD, 50));
+				g2.drawString("" + ++sceneNumber, topX, topY - 50);
+				g2.drawString(status, topX + 100, topY - 50);
+				g2.setFont(new Font(null, Font.PLAIN, 30));
+				g2.drawString(backgroundPath.getAbsolutePath(), topX, topY + 50 + (int) backgroundArea.getHeight());
+				g2.drawString(targetPath.getAbsolutePath(), topX, topY + 100 + (int) backgroundArea.getHeight());
 			}
 		}
 	}
@@ -230,7 +246,6 @@ public class ImageViewer extends JPanel {
 	}
 	
 	private void nextImage() {
-		
 	
 		ImageNode imageNode = dispatcher.popImage();
 		
@@ -261,6 +276,7 @@ public class ImageViewer extends JPanel {
 
 			targetX = imageNode.getTargetX(maxX) + topX;
 			targetY = imageNode.getTargetY(maxY) + topY;
+			status = imageNode.getExtra();
 			
 			backgroundArea = new Rectangle2D.Double(topX, topY, 
 					backgroundImage.getWidth(this),

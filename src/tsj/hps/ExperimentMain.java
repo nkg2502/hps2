@@ -14,9 +14,16 @@ public class ExperimentMain {
 
 	/**
 	 * @param args
+	 * 	-replay : replay mode
 	 * 
 	 */
 	public static void main(String[] args) {
+		
+		boolean isReplayMode = false;
+		for(String i: args) {
+			isReplayMode = i.equalsIgnoreCase("-replay");
+		}
+		
 		// read predefined values
 		String predefinedShowTimeInterval = null;
 		String predefinedBreakTimeInterval = null;
@@ -35,9 +42,13 @@ public class ExperimentMain {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-
+		
 		ViewManager viewManager = ViewManager.getInstance();
 		viewManager.init();
-		viewManager.experimentDialog(predefinedShowTimeInterval, predefinedBreakTimeInterval, predefinedAge);
+
+		if(isReplayMode)
+			viewManager.replyDialog(predefinedShowTimeInterval, predefinedBreakTimeInterval);
+		else
+			viewManager.experimentDialog(predefinedShowTimeInterval, predefinedBreakTimeInterval, predefinedAge);
 	}
 }
