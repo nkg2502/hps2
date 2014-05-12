@@ -42,7 +42,7 @@ public class ImageViewer extends JPanel {
 	/**
 	 * Secret signature
 	 */
-	private static final long serialVersionUID = 19891020200000L;
+	private static final long serialVersionUID = 19860728163001L;
 	
 	/**
 	 * For replay
