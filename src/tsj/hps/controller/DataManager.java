@@ -1,5 +1,8 @@
 package tsj.hps.controller;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +13,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
+import javax.imageio.ImageIO;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,6 +30,7 @@ import tsj.hps.ds.ExperimentData;
 public class DataManager implements Observer {
 	
 	public final static String SETTING_FILE = "setting.json";
+	public final static String RESULT_FOLDER = "result";
 	public final static boolean FEMALE = true;
 	public final static boolean MALE = false;
 	
@@ -52,6 +58,24 @@ public class DataManager implements Observer {
 	
 	public static DataManager getInstance() {
 		return instance;
+	}
+	
+	public static BufferedImage loadImage(File imageFile) {
+		
+		if(null == imageFile)
+			return null;
+		
+		BufferedImage loadedImage = null;
+		try {
+			loadedImage = ImageIO.read(imageFile);
+		} catch(IOException e) {
+			System.err.println("ERROR: image is missing!");
+			e.printStackTrace();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return loadedImage;
 	}
 
 	public int getAge() {
@@ -103,34 +127,17 @@ public class DataManager implements Observer {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void writeReport(List<ExperimentData> resultList) {
+	public void writeReport(List<ExperimentData> resultList, File reportFolder, GregorianCalendar now) {
 		
-		GregorianCalendar now = new GregorianCalendar();
-		String reportFileName = String.format("%4d.%02d.%02d[%02d.%02d.%02d].%s.%02d.csv",
-				now.get(Calendar.YEAR),
-				now.get(Calendar.MONTH) + 1,
-				now.get(Calendar.DATE),
-				now.get(Calendar.HOUR_OF_DAY),
-				now.get(Calendar.MINUTE),
-				now.get(Calendar.SECOND),
-				GENDER(gender), age);
-		
+		String reportFileName = GENDER(gender) + "." + Integer.toString(age);
 		PrintWriter reportWriter = null;
-		
-		// check result folder
-		File resultFolder = new File("result");
-		if(!resultFolder.isDirectory()) 
-			if(!resultFolder.mkdir()) {
-				System.err.println("ERROR: MAKE result FOLDER!");
-				resultFolder = null;
-			}
-		
+	
 		try {
-			reportWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFolder, reportFileName))));
+			reportWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File(reportFolder, reportFileName + ".csv"))));
 		} catch(IOException e) {
+			System.err.println("ERROR: MAKE report!");
 			e.printStackTrace();
-			
-		} catch (Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -175,11 +182,11 @@ public class DataManager implements Observer {
 		// write replay log
 		PrintWriter logWriter = null;
 		try {
-			logWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File(resultFolder, reportFileName + ".replay"))));
+			logWriter = new PrintWriter(new BufferedWriter(new FileWriter(new File(reportFolder, reportFileName + ".replay"))));
 		} catch(IOException e) {
+			System.err.println("ERROR: MAKE replay log!");
 			e.printStackTrace();
-			
-		} catch (Exception e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -205,6 +212,73 @@ public class DataManager implements Observer {
 		logWriter.close();
 	}
 	
+	public void takeScreenshot(List<ExperimentData> resultList, File reportFolder) {
+		
+		int sceneNumber = 0;
+
+		for(ExperimentData i: resultList) {
+			BufferedImage backgroundImage = loadImage(i.getBackgroundPath());
+			BufferedImage targetImage = loadImage(i.getTargetPath());
+			
+			BufferedImage screenshot = new BufferedImage(backgroundImage.getWidth(),
+					backgroundImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+			
+			Graphics2D graphics = (Graphics2D) screenshot.getGraphics();
+			
+			graphics.setBackground(Color.BLACK);
+			graphics.drawImage(backgroundImage, 0, 0, null);
+			graphics.drawImage(targetImage, i.getTargetPoint().x, i.getTargetPoint().y, null);
+			
+			String screenshotName = String.format("%03d.png", ++sceneNumber);
+			try {
+				ImageIO.write(screenshot, "png", new File(reportFolder, screenshotName));
+			} catch(IOException e) {
+				System.err.println("ERROR: MAKE screenshot!");
+				e.printStackTrace();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public void update(Observable o, Object arg) {
+
+		// check result folder
+		File resultFolder = new File(RESULT_FOLDER);
+		if(!resultFolder.isDirectory()) {
+			if(!resultFolder.mkdir()) {
+				System.err.println("ERROR: MAKE result FOLDER!");
+				resultFolder = null;
+			}
+		}
+		
+		GregorianCalendar now = new GregorianCalendar();
+		String reportFolderName = String.format("%4d.%02d.%02d[%02d.%02d.%02d].%s.%02d",
+				now.get(Calendar.YEAR),
+				now.get(Calendar.MONTH) + 1,
+				now.get(Calendar.DATE),
+				now.get(Calendar.HOUR_OF_DAY),
+				now.get(Calendar.MINUTE),
+				now.get(Calendar.SECOND),
+				GENDER(gender), age);
+
+		// check report folder
+		File reportFolder = new File(resultFolder, reportFolderName);
+		if(!reportFolder.isDirectory()) {
+			if(!reportFolder.mkdir()) {
+				System.err.println("ERROR: MAKE report FOLDER!");
+				reportFolder = null;
+			}
+		}
+		
+		writeReport((List<ExperimentData>) arg, reportFolder, now);
+		takeScreenshot((List<ExperimentData>) arg, reportFolder);
+	
+	}
+
 	/**
 	 * Summarize status log.
 	 * 
@@ -249,13 +323,6 @@ public class DataManager implements Observer {
 		return summary;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
-	public void update(Observable o, Object arg) {
-		
-		writeReport((List<ExperimentData>) arg);
-	
-	}
 	
 	private static String GENDER(boolean type) {
 		return (FEMALE == type ? "Female" : "Male");
@@ -263,7 +330,7 @@ public class DataManager implements Observer {
 	
 	private static int STATUS(boolean isFound, boolean isPassed, long time, long maxTime) {
 		
-		if(0 > time) 
+		if(0 > time)
 			return USER_ERROR;
 		else if(time >= maxTime)
 			return USER_TIMEOUT;

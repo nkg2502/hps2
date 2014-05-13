@@ -20,13 +20,12 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.GregorianCalendar;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import tsj.hps.controller.DataManager;
 import tsj.hps.ds.ExperimentData;
 import tsj.hps.ds.ImageNode;
 import tsj.hps.model.Dispatcher;
@@ -262,8 +261,8 @@ public class ImageViewer extends JPanel {
 		backgroundPath = backgroundFile;
 		targetPath = targetFile;
 		
-		backgroundImage = loadImage(backgroundFile);
-		targetImage = loadImage(targetFile);
+		backgroundImage = DataManager.loadImage(backgroundFile);
+		targetImage = DataManager.loadImage(targetFile);
 		
 		try {
 			int maxX = backgroundImage.getWidth(this)
@@ -304,25 +303,7 @@ public class ImageViewer extends JPanel {
 
 		this.repaint();
 	}
-	
-	private Image loadImage(File imageFile) {
-		
-		if(null == imageFile)
-			return null;
-		
-		Image loadedImage = null;
-		try {
-			loadedImage = ImageIO.read(imageFile);
-		} catch(IOException e) {
-			System.err.println("ERROR: target image is missing!");
-			e.printStackTrace();
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		return loadedImage;
-	}
-	
+
 	private void endExperiment() {
 
 		showTimer = new Timer(0, nullActionListener);
