@@ -128,7 +128,7 @@ public class ImageViewer extends JPanel {
 			public void keyReleased(KeyEvent event)
 			{
 				if(isShowTime && KeyEvent.VK_SPACE == event.getKeyCode())
-					verify(false, true);
+					verify(false, true, false);
 
 				if(godMode && KeyEvent.VK_ESCAPE == event.getKeyCode())
 					System.exit(0);
@@ -150,7 +150,7 @@ public class ImageViewer extends JPanel {
 				showTimer.stop();
 				isShowTime = false;
 				
-				verify(false, false);
+				verify(false, false, false);
 			}
 		});
 		
@@ -220,10 +220,10 @@ public class ImageViewer extends JPanel {
 	}
 	
 	private void verify(Point point) {
-		verify(targetArea.contains(point), false);
+		verify(targetArea.contains(point), false, true);
 	}
 	
-	private void verify(boolean isFound, boolean isPassed) {
+	private void verify(boolean isFound, boolean isPassed, boolean isClicked) {
 		
 		isShowTime = false;
 		showTimer.stop();
@@ -234,6 +234,7 @@ public class ImageViewer extends JPanel {
 		data.setTargetPath(targetPath);
 		data.setFound(isFound);
 		data.setPassed(isPassed);
+		data.setClicked(isClicked);
 		data.setTargetPoint(targetX - topX, targetY - topY);
 		
 		// added 5 due to timer difference

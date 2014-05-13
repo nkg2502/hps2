@@ -173,7 +173,7 @@ public class DataManager implements Observer {
 			reportWriter.print(",");
 			reportWriter.print(i.getTime());
 			reportWriter.print(",");
-			reportWriter.print(STATUS_2_STRING(STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval)));
+			reportWriter.print(STATUS_2_STRING(STATUS(i.isFound(), i.isPassed(), i.isClicked(), i.getTime(), showTimeInterval)));
 			reportWriter.println();
 		}
 		
@@ -202,7 +202,7 @@ public class DataManager implements Observer {
 			item.put("targetPath", i.getTargetPath().getAbsolutePath());
 			item.put("targetX", i.getTargetPoint().x);
 			item.put("targetY", i.getTargetPoint().y);
-			item.put("status", (STATUS_2_STRING(STATUS(i.isFound(), i.isPassed(), i.getTime(), showTimeInterval))));
+			item.put("status", (STATUS_2_STRING(STATUS(i.isFound(), i.isPassed(), i.isClicked(), i.getTime(), showTimeInterval))));
 			replaySequence.add(item);
 		}
 		
@@ -296,7 +296,7 @@ public class DataManager implements Observer {
 		
 		long maxTime = DataManager.getInstance().getShowTimeInterval();
 		for(ExperimentData i: resultList) {
-			++summary[STATUS(i.isFound(), i.isPassed(), i.getTime(), maxTime)];
+			++summary[STATUS(i.isFound(), i.isPassed(), i.isClicked(), i.getTime(), maxTime)];
 		}
 		
 		return summary;
@@ -328,18 +328,26 @@ public class DataManager implements Observer {
 		return (FEMALE == type ? "Female" : "Male");
 	}
 	
-	private static int STATUS(boolean isFound, boolean isPassed, long time, long maxTime) {
+	private static int STATUS(boolean isFound, boolean isPassed, boolean isClicked, long time, long maxTime) {
 		
-		if(0 > time)
-			return USER_ERROR;
-		else if(time >= maxTime)
+		if(0 < time && time < maxTime) {
+
+			if(isClicked) {
+
+				if(isFound)
+					return USER_FOUND;
+
+				return USER_MISS_CLICKED;
+
+			} else if(isPassed)
+				return USER_PASSED;
+			else
+				return USER_TIMEOUT;
+		
+		} else if(time >= maxTime)
 			return USER_TIMEOUT;
-		else if(isFound)
-			return USER_FOUND;
-		else if(isPassed)
-			return USER_PASSED;
 		else
-			return USER_MISS_CLICKED;
+			return USER_ERROR;
 	}
 	
 	private static String STATUS_2_STRING(int status) {

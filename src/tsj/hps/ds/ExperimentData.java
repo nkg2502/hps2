@@ -37,6 +37,11 @@ public class ExperimentData {
 	private boolean isPassed = false;
 	
 	/**
+	 * 
+	 */
+	private boolean isClicked = false;
+	
+	/**
 	 * Target's left top point.
 	 * 
 	 */
@@ -61,6 +66,10 @@ public class ExperimentData {
 	public void setPassed(boolean isPassed) {
 		this.isPassed = isPassed;
 	}
+	
+	public void setClicked(boolean isClicked) {
+		this.isClicked = isClicked;
+	}
 
 	public File getBackgroundPath() {
 		return backgroundPath;
@@ -80,6 +89,11 @@ public class ExperimentData {
 
 	public boolean isPassed() {
 		return isPassed;
+	}
+
+	public boolean isClicked() {
+
+		return isClicked;
 	}
 	
 	public Point getTargetPoint() {
@@ -101,4 +115,5 @@ public class ExperimentData {
 			+ ":(" + targetPoint.x + ", " + targetPoint.y + ")"
 			;
 	}
+
 }
