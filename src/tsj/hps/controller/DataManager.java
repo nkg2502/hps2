@@ -1,4 +1,4 @@
-package tsj.hps.model;
+package tsj.hps.controller;
 
 import java.io.BufferedWriter;
 import java.io.File;

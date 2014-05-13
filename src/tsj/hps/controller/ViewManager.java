@@ -1,4 +1,4 @@
-package tsj.hps.view;
+package tsj.hps.controller;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -33,10 +33,10 @@ import javax.swing.JTextField;
 
 import tsj.hps.ds.ExperimentData;
 import tsj.hps.ds.PrettyNamedFile;
-import tsj.hps.model.DataManager;
 import tsj.hps.model.Dispatcher;
 import tsj.hps.model.RandomDispatcher;
 import tsj.hps.model.ReplayDispatcher;
+import tsj.hps.view.ImageViewer;
 
 /**
  * Manage all frame and dialog.
