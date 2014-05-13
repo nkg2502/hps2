@@ -119,10 +119,10 @@ public class ViewManager implements Observer {
 		JLabel showTimeInterval = new JLabel("Show Time Interval(Unit : miliseconds)");
 		JLabel breakTimeInterval = new JLabel("Break Time Interval(Unit : miliseconds)");
 		
-		final JComboBox backgroundComboBox = new JComboBox();
+		final JComboBox<PrettyNamedFile> backgroundComboBox = new JComboBox<PrettyNamedFile>();
 		backgroundComboBox.setEditable(false);
 		
-		final JComboBox targetComboBox = new JComboBox();
+		final JComboBox<PrettyNamedFile> targetComboBox = new JComboBox<PrettyNamedFile>();
 		targetComboBox.setEditable(false);
 		
 		// read directories
